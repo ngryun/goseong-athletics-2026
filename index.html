@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>고성 육상대회 경기일정</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<style>
+:root {
+  --bg: #f5f2ec;
+  --surface: #ffffff;
+  --surface-2: #f6f3ee;
+  --ink: #18202e;
+  --ink-2: #4b5363;
+  --ink-3: #7d8390;
+  --line: #e6e0d6;
+  --line-strong: #d4ccbf;
+  --hero: #c4472b;
+  --track: #c4472b;
+  --track-soft: #fbeae4;
+  --heat: #2f5d9e;
+  --heat-soft: #e7eef8;
+  --warn-ink: #8a5300;
+  --warn-bg: #fff4d9;
+  --mark: #ffe27a;
+  --shadow: 0 10px 30px -16px rgba(24, 32, 46, .35);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121519;
+    --surface: #1b1f26;
+    --surface-2: #232832;
+    --ink: #eef0f4;
+    --ink-2: #b9bec8;
+    --ink-3: #8b919c;
+    --line: #2d333e;
+    --line-strong: #3b4250;
+    --hero: #8f321e;
+    --track: #e8684a;
+    --track-soft: #3a221c;
+    --heat: #94b6ec;
+    --heat-soft: #1f2b40;
+    --warn-ink: #f2c56d;
+    --warn-bg: #33280f;
+    --mark: #6d5a10;
+    --shadow: 0 10px 30px -16px rgba(0, 0, 0, .8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121519;
+  --surface: #1b1f26;
+  --surface-2: #232832;
+  --ink: #eef0f4;
+  --ink-2: #b9bec8;
+  --ink-3: #8b919c;
+  --line: #2d333e;
+  --line-strong: #3b4250;
+  --hero: #8f321e;
+  --track: #e8684a;
+  --track-soft: #3a221c;
+  --heat: #94b6ec;
+  --heat-soft: #1f2b40;
+  --warn-ink: #f2c56d;
+  --warn-bg: #33280f;
+  --mark: #6d5a10;
+  --shadow: 0 10px 30px -16px rgba(0, 0, 0, .8);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+button { font: inherit; }
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- 머리말 ---------- */
+.hero { position: relative; background: var(--hero); color: #fff; overflow: hidden; }
+.hero-inner { padding-block: 32px 72px; }
+.eyebrow { margin: 0 0 4px; font-size: 14px; font-weight: 500; opacity: .88; }
+.hero h1 { margin: 0; font-size: clamp(28px, 6.4vw, 46px); font-weight: 900; line-height: 1.15; letter-spacing: -.02em; }
+.hero-meta { margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; opacity: .92; }
+.hero-meta b { font-weight: 700; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 32px; margin: 20px 0 0; }
+.stats dt { font-size: 12px; opacity: .8; }
+.stats dd { margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stats dd small { font-size: 14px; font-weight: 500; margin-left: 2px; }
+.lanes {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 44px;
+  background: repeating-linear-gradient(to bottom, transparent 0 10px, rgba(255, 255, 255, .45) 10px 11px);
+}
+
+/* ---------- 검색·필터 ---------- */
+.panel {
+  position: relative; z-index: 1; margin-top: -30px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  padding: 16px; box-shadow: var(--shadow);
+}
+.search {
+  display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 8px 0 14px;
+  background: var(--surface-2); border: 1.5px solid var(--line-strong); border-radius: 12px; color: var(--ink-3);
+}
+.search:focus-within { border-color: var(--track); background: var(--surface); }
+.search input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: 17px; color: var(--ink);
+}
+.search input::placeholder { color: var(--ink-3); }
+.search input::-webkit-search-cancel-button { display: none; }
+.icon-btn {
+  flex: none; display: grid; place-items: center; width: 36px; height: 36px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--ink-3); cursor: pointer;
+}
+.icon-btn:hover { background: var(--line); color: var(--ink); }
+.search-help { margin: 8px 2px 0; font-size: 13px; color: var(--ink-3); }
+.filter-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; }
+.filter-label { flex: none; width: 30px; padding-top: 7px; font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.chip {
+  display: inline-flex; align-items: baseline; gap: 5px; padding: 6px 12px;
+  border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface);
+  color: var(--ink-2); font-size: 14px; font-weight: 500; cursor: pointer;
+}
+.chip small { font-size: 12px; color: var(--ink-3); font-weight: 400; }
+.chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.chip[aria-pressed="true"] small { color: inherit; opacity: .72; }
+
+/* ---------- 결과 막대 ---------- */
+.resultbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;
+  margin-top: 8px; padding: 12px 0;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 15px; min-width: 0; }
+.summary b { font-size: 18px; font-variant-numeric: tabular-nums; }
+.sum-filter { color: var(--ink-3); font-size: 14px; }
+.link-btn { border: 0; background: none; padding: 0; color: var(--track); font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.actions { display: flex; align-items: center; gap: 8px; }
+.seg { display: inline-flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+.seg button { border: 0; background: transparent; color: var(--ink-2); font-size: 14px; font-weight: 500; padding: 6px 12px; border-radius: 7px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: 0 1px 3px rgba(0, 0, 0, .14); }
+.btn-primary, .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 14px; border-radius: 10px; font-size: 14px; font-weight: 700;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+}
+.btn-primary { border: 0; background: var(--track); color: #fff; }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+.btn { border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--heat); outline-offset: 2px; }
+
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 14px 0 0; font-size: 13px; color: var(--ink-3); }
+.legend span.sep { width: 1px; height: 12px; background: var(--line-strong); }
+
+/* ---------- 라운드 배지 ---------- */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
+.badge.heat { background: var(--heat-soft); color: var(--heat); }
+.badge.final { background: var(--track); color: #fff; }
+.badge.cond { padding: 1px 7px; border: 1px dashed var(--track); color: var(--track); }
+
+mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+/* ---------- 학생별 ---------- */
+.group { margin-top: 24px; }
+.group-title { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 19px; font-weight: 900; }
+.group-title span { font-size: 13px; font-weight: 500; color: var(--ink-3); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); gap: 12px; }
+.card { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.name { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: -.01em; }
+.sub { margin: 2px 0 0; font-size: 13px; color: var(--ink-3); }
+.pill { flex: none; padding: 3px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); font-size: 12px; font-weight: 500; }
+.day { display: grid; grid-template-columns: 50px 1fr; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
+.day-label { display: flex; flex-direction: column; line-height: 1.25; }
+.day-label b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.day-label span { font-size: 12px; color: var(--ink-3); }
+.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.slots li { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 8px; }
+.time { font-weight: 700; font-variant-numeric: tabular-nums; }
+.event { font-weight: 500; }
+.note { display: flex; gap: 6px; align-items: flex-start; margin: 0; padding: 8px 10px; border-radius: 8px; background: var(--warn-bg); color: var(--warn-ink); font-size: 13px; font-weight: 500; }
+.note svg { flex: none; margin-top: 2px; }
+
+/* ---------- 시간순 ---------- */
+.day-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0 0 10px; font-size: 21px; font-weight: 900; }
+.day-title .dow { font-size: 15px; font-weight: 700; color: var(--ink-2); }
+.lvl { align-self: center; padding: 2px 8px; border-radius: 999px; background: var(--track-soft); color: var(--track); font-size: 12px; font-weight: 700; }
+.day-title .cnt { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--ink-3); }
+.timeline { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.tl-row { display: grid; grid-template-columns: 68px 1fr; border-top: 1px solid var(--line); }
+.tl-row:first-child { border-top: 0; }
+.tl-row.same { border-top-style: dashed; }
+.tl-row.same .tl-time { visibility: hidden; }
+.tl-time { padding: 12px 0 12px 16px; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tl-body { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 12px 0; min-width: 0; }
+.tl-what { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.tl-what .event { font-size: 16px; font-weight: 700; }
+.tl-what .meta { font-size: 13px; color: var(--ink-3); }
+.tl-who { display: flex; flex-wrap: wrap; gap: 6px; }
+.person { display: inline-flex; align-items: baseline; gap: 5px; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); font-size: 14px; font-weight: 500; }
+.person small { font-size: 12px; font-weight: 400; color: var(--ink-3); }
+@media (min-width: 760px) {
+  .tl-row { grid-template-columns: 84px 1fr; }
+  .tl-time { padding-left: 20px; }
+  .tl-body { display: grid; grid-template-columns: 260px 1fr; align-items: start; column-gap: 16px; }
+  .tl-body .note { grid-column: 2; }
+}
+
+.empty { margin-top: 24px; padding: 48px 16px; text-align: center; background: var(--surface); border: 1px dashed var(--line-strong); border-radius: 14px; color: var(--ink-2); }
+.empty p { margin: 0 0 12px; }
+
+.foot { margin-top: 32px; padding-bottom: 40px; font-size: 13px; color: var(--ink-3); }
+.foot p { margin: 4px 0; }
+
+/* ---------- 이미지 미리보기 ---------- */
+.modal {
+  position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
+  background: rgba(10, 12, 18, .62);
+}
+.modal[hidden] { display: none; }
+.modal-card { display: flex; flex-direction: column; width: min(760px, 100%); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); background: var(--surface); border-radius: 16px; overflow: hidden; }
+.modal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 10px 10px 18px; border-bottom: 1px solid var(--line); }
+.modal-head h2 { margin: 0; font-size: 16px; }
+.modal-body { flex: 1; overflow: auto; padding: 16px; background: var(--surface-2); }
+.modal-body img { display: block; width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 12px rgba(0, 0, 0, .18); }
+.modal-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.modal-foot p { margin: 0; font-size: 13px; color: var(--ink-3); }
+.modal-actions { display: flex; gap: 8px; margin-left: auto; }
+.toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px);
+  padding: 10px 16px; border-radius: 10px; background: var(--ink); color: var(--bg);
+  font-size: 14px; font-weight: 500; box-shadow: var(--shadow);
+}
+
+/* ---------- 내보내기용 시트 (항상 밝은 색) ---------- */
+#sheetHost { position: absolute; left: -10000px; top: 0; pointer-events: none; }
+.sheet {
+  --ink: #18202e; --ink-2: #4b5363; --ink-3: #7d8390; --line: #e6e0d6; --line-strong: #d4ccbf;
+  --surface-2: #f6f3ee; --track: #c4472b; --track-soft: #fbeae4; --heat: #2f5d9e; --heat-soft: #e7eef8;
+  --warn-ink: #8a5300; --warn-bg: #fff4d9;
+  width: 760px; background: #fff; color: var(--ink);
+  font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: 14px; line-height: 1.5; word-break: keep-all;
+}
+.sh-head { background: #c4472b; color: #fff; padding: 26px 32px 0; }
+.sh-eyebrow { font-size: 14px; font-weight: 500; opacity: .9; }
+.sh-title { margin-top: 2px; font-size: 30px; font-weight: 900; line-height: 1.2; letter-spacing: -.02em; }
+.sh-title span { margin-left: 6px; font-size: 18px; font-weight: 700; opacity: .85; }
+.sh-sub { display: flex; justify-content: space-between; gap: 16px; margin-top: 10px; font-size: 15px; }
+.sh-sub b { font-weight: 700; white-space: nowrap; }
+.sh-lanes { margin-top: 16px; padding-bottom: 8px; }
+.sh-lanes i { display: block; height: 8px; border-bottom: 1px solid rgba(255, 255, 255, .5); }
+.sh-body { padding: 8px 32px 4px; }
+.sh-school { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 10px; font-size: 18px; font-weight: 900; }
+.sh-school span { font-size: 13px; font-weight: 500; color: var(--ink-3); }
+.sh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sh-grid.one { grid-template-columns: 1fr; }
+.sh-card { padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 10px; }
+.sh-card-head { display: flex; align-items: baseline; gap: 8px; padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px solid var(--line); }
+.sh-card-head b { font-size: 18px; font-weight: 700; }
+.sh-card-head span { font-size: 12px; color: var(--ink-3); }
+.sh-rows { width: 100%; border-collapse: collapse; }
+.sh-rows td { padding: 4px 0; vertical-align: middle; }
+.sh-rows .d { width: 72px; color: var(--ink-2); font-size: 13px; }
+.sh-rows .t { width: 50px; font-weight: 700; }
+.sh-rows .r { text-align: right; }
+.sh-note { display: flex; gap: 6px; align-items: flex-start; margin-top: 6px; padding: 6px 8px; border-radius: 6px; background: var(--warn-bg); color: var(--warn-ink); font-size: 12px; font-weight: 500; }
+.sh-note i { flex: none; display: inline-block; width: 16px; height: 16px; margin-top: 1px; border-radius: 50%; background: var(--warn-ink); color: #fff; font-size: 11px; font-style: normal; font-weight: 900; line-height: 16px; text-align: center; }
+.sh-day { display: flex; align-items: baseline; gap: 10px; margin: 20px 0 8px; font-size: 18px; font-weight: 900; }
+.sh-day span { padding: 1px 8px; border-radius: 999px; background: var(--track-soft); color: var(--track); font-size: 12px; font-weight: 700; }
+.sh-tl { width: 100%; border-collapse: collapse; }
+.sh-tl th { padding: 6px 8px; background: var(--surface-2); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line-strong); font-size: 12px; font-weight: 700; color: var(--ink-2); text-align: left; }
+.sh-tl td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.sh-tl .t { width: 58px; font-weight: 700; }
+.sh-tl .e { width: 150px; font-weight: 700; }
+.sh-tl .e small { display: block; font-size: 12px; font-weight: 400; color: var(--ink-3); }
+.sh-tl .r { width: 110px; }
+.sh-tl .sc { color: var(--ink-3); font-size: 12px; margin-right: 4px; }
+.sh-foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 12px 32px 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
+.sh-foot span:last-child { white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <p class="eyebrow">2026 교육감기 학년별 육상대회</p>
+    <h1>고성 학생별 경기일정</h1>
+    <p class="hero-meta" id="heroMeta"></p>
+    <dl class="stats">
+      <div><dt>참가 학교</dt><dd id="statSchools"></dd></div>
+      <div><dt>출전 학생</dt><dd id="statStudents"></dd></div>
+      <div><dt>경기 일정</dt><dd id="statRows"></dd></div>
+    </dl>
+  </div>
+  <div class="lanes" aria-hidden="true"></div>
+</header>
+
+<main class="wrap">
+  <section class="panel" aria-label="검색과 필터">
+    <label class="search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="학교 또는 학생 이름으로 검색" autocomplete="off" enterkeyhint="search" aria-label="학교 또는 학생 이름 검색">
+      <button type="button" class="icon-btn" id="clearQ" aria-label="검색어 지우기" hidden>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </label>
+    <p class="search-help">여러 명은 띄어 써서 함께 찾을 수 있어요. 예) 김민정 박수빈 · 간성초 6학년 · 도학초 800m</p>
+    <div class="filter-row">
+      <span class="filter-label">학교</span>
+      <div class="chips" id="schoolChips" role="group" aria-label="학교 선택"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">일자</span>
+      <div class="chips" id="dateChips" role="group" aria-label="일자 선택"></div>
+    </div>
+  </section>
+
+  <div class="resultbar">
+    <div class="summary" id="summary" aria-live="polite"></div>
+    <div class="actions">
+      <div class="seg" role="group" aria-label="보기 방식">
+        <button type="button" data-view="student">학생별</button>
+        <button type="button" data-view="time">시간순</button>
+      </div>
+      <button type="button" class="btn-primary" id="exportBtn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        <span>이미지 저장</span>
+      </button>
+    </div>
+  </div>
+
+  <p class="legend">
+    <span class="badge heat">예선</span><span class="badge final">결승</span>
+    <span class="sep" aria-hidden="true"></span>
+    <span class="badge cond">결승(진출 시)</span> 예선을 통과해야 출전
+  </p>
+
+  <div id="results"></div>
+</main>
+
+<footer class="wrap foot" id="foot"></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modalTitle">이미지 미리보기</h2>
+      <button type="button" class="icon-btn" data-close aria-label="닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body"><img id="preview" alt="검색한 조건의 경기일정 이미지"></div>
+    <div class="modal-foot">
+      <p>휴대폰에서는 이미지를 길게 눌러 바로 저장할 수도 있어요.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" id="saveBtn">PNG 파일로 저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<div id="sheetHost" aria-hidden="true"></div>
+
+<!-- 일정 데이터: update_data.py가 엑셀에서 읽어 이 블록을 갱신합니다. -->
+<script id="schedule-data" type="application/json">{"note":"2026. 10. 23. 대회 프로그램 기준 / 고성은 2부 소속 / 결승(진출 시)은 예선 통과 시에만 출전","rows":[["간성초",3,"남","박새온","80m","11. 4.(수)","14:40","예선 2조",""],["간성초",3,"남","박새온","80m","11. 4.(수)","16:50","결승(진출 시)",""],["간성초",4,"남","이강민","80m","11. 5.(목)","10:30","예선 2조",""],["간성초",4,"남","이강민","80m","11. 5.(목)","14:15","결승(진출 시)",""],["간성초",5,"남","우승록","800m","11. 5.(목)","11:10","예선 1조",""],["간성초",5,"남","우승록","800m","11. 5.(목)","14:35","결승(진출 시)",""],["간성초",5,"여","이하린","100m","11. 4.(수)","11:30","예선 1조",""],["간성초",5,"여","이하린","100m","11. 4.(수)","15:30","결승(진출 시)",""],["간성초",5,"여","이하린","800m","11. 5.(목)","11:50","예선 2조",""],["간성초",5,"여","이하린","800m","11. 5.(목)","14:55","결승(진출 시)",""],["간성초",5,"여","이하진","높이뛰기","11. 5.(목)","11:00","결승",""],["간성초",6,"남","정찬훈","200m","11. 5.(목)","09:30","예선 2조",""],["간성초",6,"남","정찬훈","800m","11. 5.(목)","11:30","예선 1조",""],["간성초",6,"남","정찬훈","200m","11. 5.(목)","13:45","결승(진출 시)",""],["간성초",6,"남","정찬훈","800m","11. 5.(목)","14:45","결승(진출 시)",""],["간성초",6,"여","김도윤","포환던지기","11. 4.(수)","14:00","결승",""],["간성초",6,"여","김민정","200m","11. 5.(목)","10:10","예선 2조",""],["간성초",6,"여","김민정","800m","11. 5.(목)","12:10","예선 1조",""],["간성초",6,"여","김민정","200m","11. 5.(목)","14:05","결승(진출 시)",""],["간성초",6,"여","김민정","800m","11. 5.(목)","15:05","결승(진출 시)",""],["간성초",6,"여","김민정","4×100mR","11. 5.(목)","15:50","결승",""],["간성초",6,"여","박수빈","100m","11. 4.(수)","11:50","예선 1조",""],["간성초",6,"여","박수빈","100m","11. 4.(수)","15:40","결승(진출 시)",""],["간성초",6,"여","박수빈","200m","11. 5.(목)","10:10","예선 1조",""],["간성초",6,"여","박수빈","200m","11. 5.(목)","14:05","결승(진출 시)",""],["간성초",6,"여","박수빈","4×100mR","11. 5.(목)","15:50","결승",""],["간성초",6,"여","황서우","800m","11. 5.(목)","12:10","예선 2조",""],["간성초",6,"여","황서우","800m","11. 5.(목)","15:05","결승(진출 시)",""],["간성초",6,"여","황서우","4×100mR","11. 5.(목)","15:50","결승",""],["도학초",3,"여","김세정","80m","11. 4.(수)","15:00","예선 1조",""],["도학초",3,"여","김세정","80m","11. 4.(수)","17:00","결승(진출 시)",""],["도학초",3,"여","홍빛나","80m","11. 4.(수)","15:00","예선 2조",""],["도학초",3,"여","홍빛나","80m","11. 4.(수)","17:00","결승(진출 시)",""],["도학초",4,"남","유주영","높이뛰기","11. 4.(수)","16:00","결승",""],["도학초",4,"여","김수린","80m","11. 5.(목)","10:50","예선 2조",""],["도학초",4,"여","김수린","높이뛰기","11. 5.(목)","14:00","결승","80m(14:25)·높이뛰기(14:00) 시간 겹침 주의"],["도학초",4,"여","김수린","80m","11. 5.(목)","14:25","결승(진출 시)","80m(14:25)·높이뛰기(14:00) 시간 겹침 주의"],["도학초",5,"남","최우빈","200m","11. 5.(목)","09:10","예선 2조",""],["도학초",5,"남","최우빈","멀리뛰기","11. 5.(목)","11:00","결승",""],["도학초",5,"남","최우빈","200m","11. 5.(목)","13:35","결승(진출 시)",""],["도학초",5,"여","박하은","포환던지기","11. 4.(수)","10:00","결승",""],["도학초",6,"여","이다빈","높이뛰기","11. 5.(목)","09:00","결승",""],["도학초",6,"여","이다연","높이뛰기","11. 5.(목)","09:00","결승",""],["도학초",6,"여","차예사랑","100m","11. 4.(수)","11:50","예선 3조",""],["도학초",6,"여","차예사랑","멀리뛰기","11. 4.(수)","14:00","결승",""],["도학초",6,"여","차예사랑","100m","11. 4.(수)","15:40","결승(진출 시)",""],["도학초",6,"여","차예사랑","4×100mR","11. 5.(목)","15:50","결승",""],["도학초",6,"여","최주노","포환던지기","11. 4.(수)","14:00","결승",""],["공현진초",4,"여","남혜준","80m","11. 5.(목)","10:50","예선 1조",""],["공현진초",4,"여","남혜준","80m","11. 5.(목)","14:25","결승(진출 시)",""],["공현진초",4,"여","최한별","멀리뛰기","11. 4.(수)","16:00","결승",""],["공현진초",5,"여","유채은","멀리뛰기","11. 4.(수)","11:00","결승",""],["공현진초",6,"여","임서진","멀리뛰기","11. 4.(수)","14:00","결승",""],["오호초",3,"여","김민하","80m","11. 4.(수)","15:00","예선 3조",""],["오호초",3,"여","김민하","80m","11. 4.(수)","17:00","결승(진출 시)",""],["오호초",4,"남","한지수","멀리뛰기","11. 5.(목)","09:00","결승",""],["오호초",6,"남","서민재","800m","11. 5.(목)","11:30","예선 2조",""],["오호초",6,"남","서민재","800m","11. 5.(목)","14:45","결승(진출 시)",""],["천진초",4,"남","김시우","멀리뛰기","11. 5.(목)","09:00","결승",""],["천진초",5,"남","박하준","멀리뛰기","11. 5.(목)","11:00","결승","800m(11:10)·멀리뛰기(11:00) 시간 겹침 주의"],["천진초",5,"남","박하준","800m","11. 5.(목)","11:10","예선 2조","800m(11:10)·멀리뛰기(11:00) 시간 겹침 주의"],["천진초",5,"남","박하준","800m","11. 5.(목)","14:35","결승(진출 시)",""],["고성중",1,"남","김시준","1500m","11. 6.(금)","10:40","결승",""],["고성중",1,"남","김시준","800m","11. 7.(토)","10:35","결승",""],["고성중",1,"남","김시준","4×400mR","11. 7.(토)","11:45","결승",""],["고성중",1,"여","강선영","1500m","11. 6.(금)","11:40","결승",""],["고성중",1,"여","강선영","800m","11. 7.(토)","11:05","결승",""],["고성중",1,"여","최리원","400m","11. 6.(금)","14:05","결승",""],["고성중",1,"여","최리원","800m","11. 7.(토)","11:05","결승",""],["고성중",2,"남","이지호","1500m","11. 6.(금)","11:00","결승",""],["고성중",2,"남","이지호","3000m","11. 7.(토)","09:15","결승",""],["고성중",2,"남","이지호","4×400mR","11. 7.(토)","11:45","결승",""],["고성중",3,"남","심보율","1500m","11. 6.(금)","11:20","결승",""],["고성중",3,"남","심보율","800m","11. 7.(토)","10:55","결승",""],["고성중",3,"남","심보율","4×400mR","11. 7.(토)","11:45","결승",""],["고성중",3,"남","우승민","1500m","11. 6.(금)","11:20","결승",""],["고성중",3,"남","우승민","800m","11. 7.(토)","10:55","결승",""],["고성중",3,"남","우승민","4×400mR","11. 7.(토)","11:45","결승",""]]}</script>
+
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById('schedule-data').textContent);
+  const DOW_FULL = { 일: '일요일', 월: '월요일', 화: '화요일', 수: '수요일', 목: '목요일', 금: '금요일', 토: '토요일' };
+  const ICON_WARN = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>';
+
+  const $ = (s) => document.querySelector(s);
+  const pad = (n) => String(n).padStart(2, '0');
+  const uniq = (arr) => [...new Set(arr)];
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = (s) => String(s).toLowerCase().replace(/×/g, 'x').replace(/\s+/g, '');
+  function groupBy(arr, keyFn) {
+    const m = new Map();
+    for (const x of arr) {
+      const k = keyFn(x);
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(x);
+    }
+    return [...m];
+  }
+
+  // 엑셀 한 행: [학교, 학년, 성별, 성명, 종목, 일자, 시간, 라운드, 비고]
+  const rows = DATA.rows.map((r, i) => {
+    const [school, grade, gender, name, event, dateRaw, time, round, note] = r.map((v) => (v == null ? '' : v));
+    const m = String(dateRaw).match(/(\d+)\.\s*(\d+)\.\s*\((.)\)/) || [];
+    const month = +m[1], day = +m[2], dow = m[3] || '';
+    const t = String(time).padStart(5, '0');
+    return {
+      i, school: String(school), grade: +grade, gender: String(gender), name: String(name), event: String(event),
+      time: t, round: String(round), note: String(note), month, day, dow,
+      dateKey: `${pad(month)}-${pad(day)}`,
+      sortKey: `${pad(month)}-${pad(day)} ${t}`,
+      sid: `${school}|${grade}|${name}`,
+      level: /중$/.test(school) ? '중등부' : '초등부',
+    };
+  });
+
+  const SCHOOLS = uniq(rows.map((r) => r.school));
+  const NAMES = uniq(rows.map((r) => r.name));
+  const EVENTS = uniq(rows.map((r) => r.event));
+  const DATES = groupBy([...rows].sort((a, b) => a.dateKey.localeCompare(b.dateKey)), (r) => r.dateKey).map(([key, rs]) => ({
+    key, short: `${rs[0].month}.${rs[0].day}(${rs[0].dow})`, levels: uniq(rs.map((r) => r.level)),
+  }));
+  const dateByKey = Object.fromEntries(DATES.map((d) => [d.key, d]));
+
+  // 학교별 바로가기 링크(#gansung 등)에 쓰는 이름표. 목록에 없는 학교는 school-순번.
+  const SCHOOL_TOKENS = { 간성초: 'gansung', 도학초: 'dohak', 공현진초: 'gonghyeonjin', 오호초: 'oho', 천진초: 'cheonjin', 고성중: 'goseong' };
+  const tokenOf = (s) => SCHOOL_TOKENS[s] || `school-${SCHOOLS.indexOf(s) + 1}`;
+
+  const state = { q: '', school: '', date: '', view: 'student' };
+
+  /* ---------- 검색 ---------- */
+  // 학교·학년·종목으로만 해석되는 낱말은 서로 AND, 같은 종류끼리는 OR.
+  // 이름(또는 애매한 낱말)끼리는 OR → "김민정 박수빈"은 두 사람, "간성초 김민정"은 간성초의 김민정.
+  function parseQuery(q) {
+    const g = { school: [], grade: [], event: [], any: [], raw: [] };
+    for (const word of q.split(/[\s,，·/]+/)) {
+      const t = norm(word);
+      if (!t) continue;
+      const gm = t.match(/^([1-6])학년$/);
+      if (gm) { g.grade.push(+gm[1]); continue; }
+      g.raw.push(word);
+      const inSchool = SCHOOLS.some((s) => norm(s).includes(t));
+      const inName = NAMES.some((n) => norm(n).includes(t));
+      const inEvent = EVENTS.some((e) => norm(e).includes(t));
+      if (inSchool && !inName && !inEvent) g.school.push(t);
+      else if (inEvent && !inName && !inSchool) g.event.push(t);
+      else g.any.push(t);
+    }
+    return g;
+  }
+  function matches(r, g) {
+    if (g.school.length && !g.school.some((t) => norm(r.school).includes(t))) return false;
+    if (g.grade.length && !g.grade.includes(r.grade)) return false;
+    if (g.event.length && !g.event.some((t) => norm(r.event).includes(t))) return false;
+    if (g.any.length && !g.any.some((t) => norm(r.name).includes(t) || norm(r.school).includes(t) || norm(r.event).includes(t))) return false;
+    return true;
+  }
+  function highlighter(g) {
+    const words = g.raw.filter(Boolean).sort((a, b) => b.length - a.length).map((w) => esc(w).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (!words.length) return esc;
+    const re = new RegExp(words.join('|'), 'gi');
+    return (text) => esc(text).replace(re, (m) => `<mark>${m}</mark>`);
+  }
+  function currentList() {
+    const g = parseQuery(state.q);
+    return rows.filter((r) =>
+      (!state.school || r.school === state.school) &&
+      (!state.date || r.dateKey === state.date) &&
+      matches(r, g));
+  }
+
+  /* ---------- 묶기 ---------- */
+  const bySort = (a, b) => a.sortKey.localeCompare(b.sortKey) || a.i - b.i;
+  function groupStudents(list) {
+    return groupBy(list, (r) => r.sid).map(([sid, rs]) => {
+      const sorted = [...rs].sort(bySort);
+      const f = sorted[0];
+      return {
+        sid, school: f.school, grade: f.grade, gender: f.gender, name: f.name, rows: sorted,
+        events: uniq(sorted.map((r) => r.event)),
+        notes: uniq(sorted.map((r) => r.note).filter(Boolean)),
+        days: groupBy(sorted, (r) => r.dateKey),
+      };
+    });
+  }
+  function groupDays(list) {
+    return groupBy([...list].sort(bySort), (r) => r.dateKey).map(([key, rs]) => ({
+      key, first: rs[0], count: rs.length,
+      students: uniq(rs.map((r) => r.sid)).length,
+      levels: uniq(rs.map((r) => r.level)),
+      slots: groupBy(rs, (r) => [r.time, r.event, r.round, r.grade, r.gender].join('|')).map(([, items]) => ({ r: items[0], items })),
+    }));
+  }
+  function slotNotes(items) {
+    return groupBy(items.filter((x) => x.note), (x) => x.note).map(([note, xs]) => ({ who: xs.map((x) => x.name).join(', '), note }));
+  }
+
+  /* ---------- 화면 그리기 ---------- */
+  const roundKind = (round) => (round.startsWith('예선') ? 'heat' : round.includes('진출') ? 'cond' : 'final');
+  const badge = (round) => `<span class="badge ${roundKind(round)}">${esc(round)}</span>`;
+
+  function studentView(list, hl) {
+    const students = groupStudents(list);
+    return groupBy(students, (s) => s.school).map(([school, ss]) => `
+      <section class="group">
+        <h2 class="group-title">${hl(school)}<span>${ss.length}명</span></h2>
+        <div class="grid">${ss.map((s) => `
+          <article class="card">
+            <header class="card-head">
+              <div>
+                <h3 class="name">${hl(s.name)}</h3>
+                <p class="sub">${hl(s.school)} · ${s.grade}학년 · ${esc(s.gender)}</p>
+              </div>
+              <span class="pill">${s.events.length}종목</span>
+            </header>
+            ${s.days.map(([, rs]) => `
+              <div class="day">
+                <div class="day-label"><b>${rs[0].month}.${rs[0].day}</b><span>${rs[0].dow}요일</span></div>
+                <ul class="slots">${rs.map((r) => `
+                  <li><span class="time">${r.time}</span><span class="event">${hl(r.event)}</span>${badge(r.round)}</li>`).join('')}
+                </ul>
+              </div>`).join('')}
+            ${s.notes.map((n) => `<p class="note">${ICON_WARN}<span>${esc(n)}</span></p>`).join('')}
+          </article>`).join('')}
+        </div>
+      </section>`).join('');
+  }
+
+  function timeView(list, hl) {
+    return groupDays(list).map((d) => {
+      let prev = '';
+      return `
+      <section class="group">
+        <h2 class="day-title">
+          <span>${d.first.month}월 ${d.first.day}일</span><span class="dow">${DOW_FULL[d.first.dow] || ''}</span>
+          ${d.levels.map((l) => `<span class="lvl">${l}</span>`).join('')}
+          <span class="cnt">학생 ${d.students}명 · 일정 ${d.count}건</span>
+        </h2>
+        <ol class="timeline">${d.slots.map(({ r, items }) => {
+          const same = r.time === prev;
+          prev = r.time;
+          return `
+          <li class="tl-row${same ? ' same' : ''}">
+            <div class="tl-time">${r.time}</div>
+            <div class="tl-body">
+              <div class="tl-what"><span class="event">${hl(r.event)}</span><span class="meta">${r.grade}학년 ${esc(r.gender)}</span>${badge(r.round)}</div>
+              <div class="tl-who">${items.map((x) => `<span class="person"><small>${hl(x.school)}</small>${hl(x.name)}</span>`).join('')}</div>
+              ${slotNotes(items).map((n) => `<p class="note">${ICON_WARN}<span>${esc(n.who)} — ${esc(n.note)}</span></p>`).join('')}
+            </div>
+          </li>`;
+        }).join('')}
+        </ol>
+      </section>`;
+    }).join('');
+  }
+
+  function filterParts() {
+    const parts = [];
+    if (state.school) parts.push(state.school);
+    if (state.date) parts.push(dateByKey[state.date].short);
+    if (state.q.trim()) parts.push(`“${state.q.trim()}”`);
+    return parts;
+  }
+
+  function render() {
+    const list = currentList();
+    const hl = highlighter(parseQuery(state.q));
+    const nStudents = uniq(list.map((r) => r.sid)).length;
+    const parts = filterParts();
+
+    $('#summary').innerHTML =
+      `<span>학생 <b>${nStudents}</b>명 · 일정 <b>${list.length}</b>건</span>` +
+      (parts.length ? `<span class="sum-filter">${esc(parts.join(' · '))}</span><button type="button" class="link-btn" data-reset>초기화</button>` : '');
+
+    $('#results').innerHTML = list.length
+      ? (state.view === 'time' ? timeView(list, hl) : studentView(list, hl))
+      : `<div class="empty"><p>조건에 맞는 일정이 없어요.</p><button type="button" class="btn" data-reset>조건 초기화</button></div>`;
+
+    document.querySelectorAll('#schoolChips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.school === state.school)));
+    document.querySelectorAll('#dateChips .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.date === state.date)));
+    document.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === state.view)));
+    $('#clearQ').hidden = !state.q;
+    $('#exportBtn').disabled = !list.length;
+    writeHash();
+  }
+
+  /* ---------- 주소 끝 #학교 이름표로 학교를 바로 골라 열기 ---------- */
+  function readHash() {
+    const h = decodeURIComponent(location.hash.slice(1));
+    state.school = SCHOOLS.find((s) => tokenOf(s) === h) || '';
+  }
+  function writeHash() {
+    const h = state.school ? `#${tokenOf(state.school)}` : '';
+    if (h === location.hash) return;
+    try { history.replaceState(null, '', h || location.pathname + location.search); } catch (e) { /* 막힌 환경에서는 무시 */ }
+  }
+
+  /* ---------- 처음 한 번 그리는 부분 ---------- */
+  function setupStatic() {
+    const studentsBySchool = Object.fromEntries(groupBy(rows, (r) => r.school).map(([s, rs]) => [s, uniq(rs.map((r) => r.sid)).length]));
+    $('#schoolChips').innerHTML =
+      `<button type="button" class="chip" data-school="">전체</button>` +
+      SCHOOLS.map((s) => `<button type="button" class="chip" data-school="${esc(s)}">${esc(s)}<small>${studentsBySchool[s]}</small></button>`).join('');
+    $('#dateChips').innerHTML =
+      `<button type="button" class="chip" data-date="">전체</button>` +
+      DATES.map((d) => `<button type="button" class="chip" data-date="${d.key}">${d.short}<small>${d.levels.map((l) => l.replace('부', '')).join('·')}</small></button>`).join('');
+
+    const levelRanges = groupBy([...rows].sort(bySort), (r) => r.level).map(([level, rs]) => {
+      const a = dateByKey[rs[0].dateKey].short, b = dateByKey[rs[rs.length - 1].dateKey].short;
+      return `<span><b>${level}</b> ${a === b ? a : `${a} ~ ${b}`}</span>`;
+    });
+    $('#heroMeta').innerHTML = levelRanges.join('');
+    $('#statSchools').innerHTML = `${SCHOOLS.length}<small>개교</small>`;
+    $('#statStudents').innerHTML = `${uniq(rows.map((r) => r.sid)).length}<small>명</small>`;
+    $('#statRows').innerHTML = `${rows.length}<small>건</small>`;
+    $('#foot').innerHTML = DATA.note ? DATA.note.split('/').map((s) => `<p>※ ${esc(s.trim())}</p>`).join('') : '';
+  }
+
+  /* ---------- 이미지 내보내기 ---------- */
+  function sheetStudents(list) {
+    const students = groupStudents(list);
+    const cls = students.length > 1 ? 'sh-grid' : 'sh-grid one';
+    return groupBy(students, (s) => s.school).map(([school, ss]) => `
+      <div class="sh-school">${esc(school)}<span>${ss.length}명</span></div>
+      <div class="${cls}">${ss.map((s) => `
+        <div class="sh-card">
+          <div class="sh-card-head"><b>${esc(s.name)}</b><span>${esc(s.school)} · ${s.grade}학년 · ${esc(s.gender)}</span></div>
+          <table class="sh-rows"><tbody>${s.rows.map((r) => `
+            <tr><td class="d">${r.month}.${r.day}(${r.dow})</td><td class="t">${r.time}</td><td>${esc(r.event)}</td><td class="r">${badge(r.round)}</td></tr>`).join('')}
+          </tbody></table>
+          ${s.notes.map((n) => `<div class="sh-note"><i>!</i><span>${esc(n)}</span></div>`).join('')}
+        </div>`).join('')}
+      </div>`).join('');
+  }
+  function sheetTime(list) {
+    return groupDays(list).map((d) => `
+      <div class="sh-day">${d.first.month}월 ${d.first.day}일 ${DOW_FULL[d.first.dow] || ''}${d.levels.map((l) => `<span>${l}</span>`).join('')}</div>
+      <table class="sh-tl">
+        <thead><tr><th>시간</th><th>종목</th><th>라운드</th><th>출전 학생</th></tr></thead>
+        <tbody>${d.slots.map(({ r, items }) => `
+          <tr>
+            <td class="t">${r.time}</td>
+            <td class="e">${esc(r.event)}<small>${r.grade}학년 ${esc(r.gender)}</small></td>
+            <td class="r">${badge(r.round)}</td>
+            <td>${groupBy(items, (x) => x.school).map(([sc, xs]) => `<div><span class="sc">${esc(sc)}</span>${xs.map((x) => esc(x.name)).join(', ')}</div>`).join('')}
+              ${slotNotes(items).map((n) => `<div class="sh-note"><i>!</i><span>${esc(n.who)} — ${esc(n.note)}</span></div>`).join('')}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`).join('');
+  }
+  function buildSheet(list) {
+    const parts = filterParts();
+    const now = new Date();
+    const stamp = `${now.getFullYear()}. ${now.getMonth() + 1}. ${now.getDate()}. ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    const el = document.createElement('div');
+    el.className = 'sheet';
+    el.innerHTML = `
+      <div class="sh-head">
+        <div class="sh-eyebrow">2026 교육감기 학년별 육상대회</div>
+        <div class="sh-title">고성 경기일정<span>${state.view === 'time' ? '시간순' : '학생별'}</span></div>
+        <div class="sh-sub"><span>${parts.length ? esc(parts.join(' · ')) : '전체 일정'}</span><b>학생 ${uniq(list.map((r) => r.sid)).length}명 · 일정 ${list.length}건</b></div>
+        <div class="sh-lanes"><i></i><i></i><i></i></div>
+      </div>
+      <div class="sh-body">${state.view === 'time' ? sheetTime(list) : sheetStudents(list)}</div>
+      <div class="sh-foot"><span>${DATA.note ? `※ ${esc(DATA.note)}` : ''}</span><span>${stamp} 저장</span></div>`;
+    return el;
+  }
+  function fileName() {
+    const parts = [state.school, state.date && dateByKey[state.date].short, state.q.trim()].filter(Boolean);
+    const label = (parts.join('_') || '전체').replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 60);
+    return `육상대회_경기일정_${label}_${state.view === 'time' ? '시간순' : '학생별'}.png`;
+  }
+
+  async function loadFonts(text) {
+    if (!document.fonts) return;
+    await Promise.all(['400', '500', '700', '900'].map((w) => document.fonts.load(`${w} 16px "Noto Sans KR"`, text).catch(() => {})));
+    await document.fonts.ready;
+  }
+
+  let toastTimer = 0;
+  function toast(msg) {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.hidden = true; }, 3500);
+  }
+
+  // claude.ai에 올린 페이지에서는 downloads 기능으로 저장하고, 내 PC에서 연 파일은 일반 다운로드를 씁니다.
+  const inViewer = !!(window.claude && window.claude.use);
+  const downloadsReady = inViewer ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+
+  let previewUrl = null;
+  let previewBlob = null;
+  let previewName = '';
+  async function exportImage() {
+    const list = currentList();
+    if (!list.length) return;
+    if (!window.html2canvas) {
+      toast('이미지 저장 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.');
+      return;
+    }
+    const btn = $('#exportBtn');
+    const label = btn.querySelector('span');
+    btn.disabled = true;
+    label.textContent = '만드는 중…';
+    const host = $('#sheetHost');
+    try {
+      const sheet = buildSheet(list);
+      host.replaceChildren(sheet);
+      await loadFonts(sheet.textContent);
+      const w = sheet.offsetWidth, h = sheet.offsetHeight;
+      const scale = Math.min(2, Math.sqrt(15e6 / (w * h)));  // 휴대폰 캔버스 한도 안쪽으로
+      const canvas = await window.html2canvas(sheet, { scale, backgroundColor: '#ffffff', logging: false });
+      const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
+      if (!blob) throw new Error('toBlob failed');
+      openPreview(blob, fileName());
+    } catch (err) {
+      console.error(err);
+      toast('이미지를 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.');
+    } finally {
+      host.replaceChildren();
+      btn.disabled = false;
+      label.textContent = '이미지 저장';
+    }
+  }
+
+  function openPreview(blob, name) {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(blob);
+    previewBlob = blob;
+    previewName = name;
+    $('#preview').src = previewUrl;
+    const save = $('#saveBtn');
+    save.hidden = false;
+    $('#modal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    save.focus();
+    // 저장 기능이 없는 화면이면 버튼을 숨기고 길게 눌러 저장하는 안내만 남깁니다.
+    downloadsReady.then((d) => { if (inViewer && !d) save.hidden = true; });
+  }
+  async function savePreview() {
+    if (!previewBlob) return;
+    if (!inViewer) {
+      const a = document.createElement('a');
+      a.href = previewUrl;
+      a.download = previewName;
+      a.click();
+      return;
+    }
+    try {
+      const downloads = await downloadsReady;
+      if (!downloads) throw { code: 'unavailable' };
+      await downloads.save({ filename: previewName, data: previewBlob });
+      toast('이미지를 저장했어요.');
+    } catch (err) {
+      if (err && err.code === 'declined') return;
+      if (err && err.code === 'rate_limited') toast('저장 창이 이미 열려 있어요. 잠시 뒤 다시 눌러 주세요.');
+      else toast('이 화면에서는 파일로 저장할 수 없어요. 이미지를 길게 누르거나 마우스 오른쪽 버튼으로 저장해 주세요.');
+    }
+  }
+  function closePreview() {
+    $('#modal').hidden = true;
+    document.body.style.overflow = '';
+    $('#exportBtn').focus();
+  }
+
+  /* ---------- 이벤트 ---------- */
+  function reset() {
+    Object.assign(state, { q: '', school: '', date: '' });
+    $('#q').value = '';
+    render();
+  }
+  $('#q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
+  $('#clearQ').addEventListener('click', () => { state.q = ''; $('#q').value = ''; render(); $('#q').focus(); });
+  $('#schoolChips').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (b) { state.school = b.dataset.school; render(); }
+  });
+  $('#dateChips').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (b) { state.date = b.dataset.date; render(); }
+  });
+  document.querySelector('.seg').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) { state.view = b.dataset.view; render(); }
+  });
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-reset]')) reset(); });
+  $('#exportBtn').addEventListener('click', exportImage);
+  $('#saveBtn').addEventListener('click', savePreview);
+  $('#modal').addEventListener('click', (e) => { if (e.target === e.currentTarget || e.target.closest('[data-close]')) closePreview(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) closePreview(); });
+  window.addEventListener('hashchange', () => { readHash(); render(); });
+
+  document.documentElement.lang = 'ko';
+  setupStatic();
+  readHash();
+  render();
+})();
+</script>
+</body>
+</html>
