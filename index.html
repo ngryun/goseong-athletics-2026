@@ -172,6 +172,8 @@ button { font: inherit; }
 .btn-primary:hover { filter: brightness(1.06); }
 .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
 .btn { border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
+.btn:hover { border-color: var(--ink-3); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
 :focus-visible { outline: 2px solid var(--heat); outline-offset: 2px; }
 
 .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 14px 0 0; font-size: 13px; color: var(--ink-3); }
@@ -305,6 +307,26 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .sh-tl .sc { color: var(--ink-3); font-size: 12px; margin-right: 4px; }
 .sh-foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 12px 32px 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
 .sh-foot span:last-child { white-space: nowrap; }
+
+/* ---------- 인쇄: 화면 대신 걸러진 일정표만 A4로 ---------- */
+#printHost { display: none; }
+@page { size: A4; margin: 12mm; }
+@media print {
+  body { background: #fff; }
+  body::before, body > *:not(#printHost) { display: none !important; }
+  #printHost { display: block; }
+  #printHost .sheet { width: auto; font-size: 12.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #printHost .sh-head { background: none; color: var(--ink); padding: 0; }
+  #printHost .sh-eyebrow { color: var(--track); opacity: 1; }
+  #printHost .sh-title { font-size: 24px; }
+  #printHost .sh-title span { color: var(--ink-3); opacity: 1; }
+  #printHost .sh-lanes { margin-top: 8px; padding-bottom: 0; }
+  #printHost .sh-lanes i { height: 4px; border-bottom-color: var(--track); }
+  #printHost .sh-body { padding: 0; }
+  #printHost .sh-foot { padding: 8px 0 0; }
+  #printHost .sh-card, #printHost .sh-tl tr { break-inside: avoid; }
+  #printHost .sh-school, #printHost .sh-day { break-after: avoid; }
+}
 </style>
 </head>
 <body>
@@ -350,6 +372,10 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         <button type="button" data-view="student">학생별</button>
         <button type="button" data-view="time">시간순</button>
       </div>
+      <button type="button" class="btn" id="printBtn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+        <span>인쇄</span>
+      </button>
       <button type="button" class="btn-primary" id="exportBtn">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
         <span>이미지 저장</span>
@@ -389,6 +415,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 <div class="toast" id="toast" role="status" hidden></div>
 
 <div id="sheetHost" aria-hidden="true"></div>
+<div id="printHost" aria-hidden="true"></div>
 
 <!-- 일정 데이터: update_data.py가 엑셀에서 읽어 이 블록을 갱신합니다. -->
 <script id="schedule-data" type="application/json">{"note":"2026. 10. 23. 대회 프로그램 기준 / 고성은 2부 소속 / 결승(진출 시)은 예선 통과 시에만 출전","rows":[["간성초",3,"남","박새온","80m","11. 4.(수)","14:40","예선 2조",""],["간성초",3,"남","박새온","80m","11. 4.(수)","16:50","결승(진출 시)",""],["간성초",4,"남","이강민","80m","11. 5.(목)","10:30","예선 2조",""],["간성초",4,"남","이강민","80m","11. 5.(목)","14:15","결승(진출 시)",""],["간성초",5,"남","우승록","800m","11. 5.(목)","11:10","예선 1조",""],["간성초",5,"남","우승록","800m","11. 5.(목)","14:35","결승(진출 시)",""],["간성초",5,"여","이하린","100m","11. 4.(수)","11:30","예선 1조",""],["간성초",5,"여","이하린","100m","11. 4.(수)","15:30","결승(진출 시)",""],["간성초",5,"여","이하린","800m","11. 5.(목)","11:50","예선 2조",""],["간성초",5,"여","이하린","800m","11. 5.(목)","14:55","결승(진출 시)",""],["간성초",5,"여","이하진","높이뛰기","11. 5.(목)","11:00","결승",""],["간성초",6,"남","정찬훈","200m","11. 5.(목)","09:30","예선 2조",""],["간성초",6,"남","정찬훈","800m","11. 5.(목)","11:30","예선 1조",""],["간성초",6,"남","정찬훈","200m","11. 5.(목)","13:45","결승(진출 시)",""],["간성초",6,"남","정찬훈","800m","11. 5.(목)","14:45","결승(진출 시)",""],["간성초",6,"여","김도윤","포환던지기","11. 4.(수)","14:00","결승",""],["간성초",6,"여","김민정","200m","11. 5.(목)","10:10","예선 2조",""],["간성초",6,"여","김민정","800m","11. 5.(목)","12:10","예선 1조",""],["간성초",6,"여","김민정","200m","11. 5.(목)","14:05","결승(진출 시)",""],["간성초",6,"여","김민정","800m","11. 5.(목)","15:05","결승(진출 시)",""],["간성초",6,"여","김민정","4×100mR","11. 5.(목)","15:50","결승",""],["간성초",6,"여","박수빈","100m","11. 4.(수)","11:50","예선 1조",""],["간성초",6,"여","박수빈","100m","11. 4.(수)","15:40","결승(진출 시)",""],["간성초",6,"여","박수빈","200m","11. 5.(목)","10:10","예선 1조",""],["간성초",6,"여","박수빈","200m","11. 5.(목)","14:05","결승(진출 시)",""],["간성초",6,"여","박수빈","4×100mR","11. 5.(목)","15:50","결승",""],["간성초",6,"여","황서우","800m","11. 5.(목)","12:10","예선 2조",""],["간성초",6,"여","황서우","800m","11. 5.(목)","15:05","결승(진출 시)",""],["간성초",6,"여","황서우","4×100mR","11. 5.(목)","15:50","결승",""],["도학초",3,"여","김세정","80m","11. 4.(수)","15:00","예선 1조",""],["도학초",3,"여","김세정","80m","11. 4.(수)","17:00","결승(진출 시)",""],["도학초",3,"여","홍빛나","80m","11. 4.(수)","15:00","예선 2조",""],["도학초",3,"여","홍빛나","80m","11. 4.(수)","17:00","결승(진출 시)",""],["도학초",4,"남","유주영","높이뛰기","11. 4.(수)","16:00","결승",""],["도학초",4,"여","김수린","80m","11. 5.(목)","10:50","예선 2조",""],["도학초",4,"여","김수린","높이뛰기","11. 5.(목)","14:00","결승","80m(14:25)·높이뛰기(14:00) 시간 겹침 주의"],["도학초",4,"여","김수린","80m","11. 5.(목)","14:25","결승(진출 시)","80m(14:25)·높이뛰기(14:00) 시간 겹침 주의"],["도학초",5,"남","최우빈","200m","11. 5.(목)","09:10","예선 2조",""],["도학초",5,"남","최우빈","멀리뛰기","11. 5.(목)","11:00","결승",""],["도학초",5,"남","최우빈","200m","11. 5.(목)","13:35","결승(진출 시)",""],["도학초",5,"여","박하은","포환던지기","11. 4.(수)","10:00","결승",""],["도학초",6,"여","이다빈","높이뛰기","11. 5.(목)","09:00","결승",""],["도학초",6,"여","이다연","높이뛰기","11. 5.(목)","09:00","결승",""],["도학초",6,"여","차예사랑","100m","11. 4.(수)","11:50","예선 3조",""],["도학초",6,"여","차예사랑","멀리뛰기","11. 4.(수)","14:00","결승",""],["도학초",6,"여","차예사랑","100m","11. 4.(수)","15:40","결승(진출 시)",""],["도학초",6,"여","차예사랑","4×100mR","11. 5.(목)","15:50","결승",""],["도학초",6,"여","최주노","포환던지기","11. 4.(수)","14:00","결승",""],["공현진초",4,"여","남혜준","80m","11. 5.(목)","10:50","예선 1조",""],["공현진초",4,"여","남혜준","80m","11. 5.(목)","14:25","결승(진출 시)",""],["공현진초",4,"여","최한별","멀리뛰기","11. 4.(수)","16:00","결승",""],["공현진초",5,"여","유채은","멀리뛰기","11. 4.(수)","11:00","결승",""],["공현진초",6,"여","임서진","멀리뛰기","11. 4.(수)","14:00","결승",""],["오호초",3,"여","김민하","80m","11. 4.(수)","15:00","예선 3조",""],["오호초",3,"여","김민하","80m","11. 4.(수)","17:00","결승(진출 시)",""],["오호초",4,"남","한지수","멀리뛰기","11. 5.(목)","09:00","결승",""],["오호초",6,"남","서민재","800m","11. 5.(목)","11:30","예선 2조",""],["오호초",6,"남","서민재","800m","11. 5.(목)","14:45","결승(진출 시)",""],["천진초",4,"남","김시우","멀리뛰기","11. 5.(목)","09:00","결승",""],["천진초",5,"남","박하준","멀리뛰기","11. 5.(목)","11:00","결승","800m(11:10)·멀리뛰기(11:00) 시간 겹침 주의"],["천진초",5,"남","박하준","800m","11. 5.(목)","11:10","예선 2조","800m(11:10)·멀리뛰기(11:00) 시간 겹침 주의"],["천진초",5,"남","박하준","800m","11. 5.(목)","14:35","결승(진출 시)",""],["고성중",1,"남","김시준","1500m","11. 6.(금)","10:40","결승",""],["고성중",1,"남","김시준","800m","11. 7.(토)","10:35","결승",""],["고성중",1,"남","김시준","4×400mR","11. 7.(토)","11:45","결승",""],["고성중",1,"여","강선영","1500m","11. 6.(금)","11:40","결승",""],["고성중",1,"여","강선영","800m","11. 7.(토)","11:05","결승",""],["고성중",1,"여","최리원","400m","11. 6.(금)","14:05","결승",""],["고성중",1,"여","최리원","800m","11. 7.(토)","11:05","결승",""],["고성중",2,"남","이지호","1500m","11. 6.(금)","11:00","결승",""],["고성중",2,"남","이지호","3000m","11. 7.(토)","09:15","결승",""],["고성중",2,"남","이지호","4×400mR","11. 7.(토)","11:45","결승",""],["고성중",3,"남","심보율","1500m","11. 6.(금)","11:20","결승",""],["고성중",3,"남","심보율","800m","11. 7.(토)","10:55","결승",""],["고성중",3,"남","심보율","4×400mR","11. 7.(토)","11:45","결승",""],["고성중",3,"남","우승민","1500m","11. 6.(금)","11:20","결승",""],["고성중",3,"남","우승민","800m","11. 7.(토)","10:55","결승",""],["고성중",3,"남","우승민","4×400mR","11. 7.(토)","11:45","결승",""]]}</script>
@@ -597,6 +624,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     document.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === state.view)));
     $('#clearQ').hidden = !state.q;
     $('#exportBtn').disabled = !list.length;
+    $('#printBtn').disabled = !list.length;
     writeHash();
   }
 
@@ -664,7 +692,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         </tbody>
       </table>`).join('');
   }
-  function buildSheet(list) {
+  function buildSheet(list, action = '저장') {
     const parts = filterParts();
     const now = new Date();
     const stamp = `${now.getFullYear()}. ${now.getMonth() + 1}. ${now.getDate()}. ${pad(now.getHours())}:${pad(now.getMinutes())}`;
@@ -678,7 +706,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         <div class="sh-lanes"><i></i><i></i><i></i></div>
       </div>
       <div class="sh-body">${state.view === 'time' ? sheetTime(list) : sheetStudents(list)}</div>
-      <div class="sh-foot"><span>${DATA.note ? `※ ${esc(DATA.note)}` : ''}</span><span>${stamp} 저장</span></div>`;
+      <div class="sh-foot"><span>${DATA.note ? `※ ${esc(DATA.note)}` : ''}</span><span>${stamp} ${action}</span></div>`;
     return el;
   }
   function fileName() {
@@ -803,6 +831,15 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
   });
   document.addEventListener('click', (e) => { if (e.target.closest('[data-reset]')) reset(); });
   $('#exportBtn').addEventListener('click', exportImage);
+
+  // 인쇄 버튼과 Ctrl+P 모두 지금 걸러진 일정표를 인쇄합니다. claude.ai 화면은 인쇄 창을 막아 버튼을 숨깁니다.
+  $('#printBtn').hidden = inViewer;
+  $('#printBtn').addEventListener('click', () => window.print());
+  window.addEventListener('beforeprint', () => {
+    const list = currentList();
+    $('#printHost').replaceChildren(...(list.length ? [buildSheet(list, '출력')] : []));
+  });
+  window.addEventListener('afterprint', () => $('#printHost').replaceChildren());
   $('#saveBtn').addEventListener('click', savePreview);
   $('#modal').addEventListener('click', (e) => { if (e.target === e.currentTarget || e.target.closest('[data-close]')) closePreview(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) closePreview(); });
