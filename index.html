@@ -308,24 +308,65 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .sh-foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 12px 32px 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
 .sh-foot span:last-child { white-space: nowrap; }
 
-/* ---------- 인쇄: 화면 대신 걸러진 일정표만 A4로 ---------- */
-#printHost { display: none; }
-@page { size: A4; margin: 12mm; }
+/* ---------- 인쇄: A4 쪽마다 머리말·쪽번호, 학교/날짜 단위로 쪽 나눔 ---------- */
+/* 화면에서는 보이지 않는 곳에 쪽을 미리 배치해 높이를 재고, 인쇄할 때만 꺼내 보입니다. */
+#printHost { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }
+@page { size: A4; margin: 0; }
+.pp {
+  --ink: #18202e; --ink-2: #4b5363; --ink-3: #7d8390; --line: #e6e0d6; --line-strong: #d4ccbf;
+  --surface-2: #f6f3ee; --track: #c4472b; --track-soft: #fbeae4; --heat: #2f5d9e; --heat-soft: #e7eef8;
+  --warn-ink: #8a5300; --warn-bg: #fff4d9;
+  box-sizing: border-box; width: 210mm; height: 296mm; padding: 12mm 13mm 9mm;
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #fff; color: var(--ink);
+  font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: 9pt; line-height: 1.45; word-break: keep-all;
+  break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.pp:last-child { break-after: auto; }
+.pp-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; padding-bottom: 2.4mm; border-bottom: 1.2mm double var(--track); }
+.pp-eyebrow { font-size: 8pt; font-weight: 700; color: var(--track); }
+.pp-title { font-size: 16pt; font-weight: 900; line-height: 1.25; letter-spacing: -.02em; }
+.pp-title span { margin-left: 1.6mm; font-size: 10pt; font-weight: 700; color: var(--ink-3); }
+.pp-meta { text-align: right; font-size: 8.5pt; color: var(--ink-2); }
+.pp-meta b { display: block; font-size: 9.5pt; color: var(--ink); white-space: nowrap; }
+.pp-body { flex: 1; min-height: 0; display: flex; gap: 6mm; padding-top: 4.5mm; }
+.pp-col { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4mm; }
+.pp-foot { display: flex; justify-content: space-between; gap: 6mm; padding-top: 2mm; border-top: 0.25mm solid var(--line-strong); font-size: 7.5pt; color: var(--ink-3); }
+.pp-foot span:last-child { white-space: nowrap; }
+.pp-foot b { color: var(--ink); }
+.pp-group { display: flex; flex-direction: column; gap: 2.2mm; }
+.pp-group-title { display: flex; align-items: baseline; gap: 2mm; padding-bottom: 1mm; border-bottom: 0.35mm solid var(--ink); font-size: 11.5pt; font-weight: 900; }
+.pp-group-title small { margin-left: auto; font-size: 8pt; font-weight: 500; color: var(--ink-3); }
+.pp-group-title .cont { margin-left: 0; color: var(--track); font-weight: 700; }
+.pp-lvl { align-self: center; padding: 0 1.6mm; border-radius: 3mm; background: var(--track-soft); color: var(--track); font-size: 7.5pt; font-weight: 700; }
+.pp-cards { display: flex; flex-direction: column; gap: 2.2mm; }
+.pp-card { padding: 2mm 3mm 1.8mm; border: 0.25mm solid var(--line-strong); border-radius: 1.6mm; }
+.pp-card-head { display: flex; align-items: baseline; gap: 2mm; padding-bottom: 1mm; margin-bottom: 0.6mm; border-bottom: 0.2mm solid var(--line); }
+.pp-card-head b { font-size: 11pt; }
+.pp-card-head span { font-size: 7.5pt; color: var(--ink-3); }
+.pp-rows { width: 100%; border-collapse: collapse; }
+.pp-rows td { padding: 0.6mm 0; font-size: 8.8pt; vertical-align: middle; }
+.pp-rows .d { width: 15mm; font-size: 8pt; color: var(--ink-2); }
+.pp-rows .t { width: 11mm; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pp-rows .r { text-align: right; }
+.pp .badge { padding: 0.15mm 1.6mm; border-radius: 1mm; font-size: 7.2pt; }
+.pp .badge.cond { padding: 0 1.4mm; }
+.pp-note { display: flex; gap: 1.4mm; margin-top: 1mm; padding: 0.8mm 1.8mm; border-radius: 1mm; background: var(--warn-bg); color: var(--warn-ink); font-size: 7.5pt; font-weight: 500; }
+.pp-note i { font-style: normal; font-weight: 900; }
+.pp-tl { width: 100%; border-collapse: collapse; }
+.pp-tl th { padding: 1.1mm 2mm; background: var(--surface-2); border-bottom: 0.3mm solid var(--line-strong); font-size: 7.5pt; font-weight: 700; color: var(--ink-2); text-align: left; }
+.pp-tl td { padding: 1.4mm 2mm; border-bottom: 0.2mm solid var(--line); font-size: 9pt; vertical-align: top; }
+.pp-tl .t { width: 14mm; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pp-tl .e { width: 34mm; font-weight: 700; }
+.pp-tl .e small { display: block; font-size: 7.5pt; font-weight: 400; color: var(--ink-3); }
+.pp-tl .r { width: 26mm; }
+.pp-tl .sc { margin-right: 1.5mm; font-size: 7.5pt; color: var(--ink-3); }
+.pp-tl .pp-note { margin-top: 0.8mm; }
 @media print {
-  body { background: #fff; }
+  html, body { background: #fff !important; }
   body::before, body > *:not(#printHost) { display: none !important; }
-  #printHost { display: block; }
-  #printHost .sheet { width: auto; font-size: 12.5px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  #printHost .sh-head { background: none; color: var(--ink); padding: 0; }
-  #printHost .sh-eyebrow { color: var(--track); opacity: 1; }
-  #printHost .sh-title { font-size: 24px; }
-  #printHost .sh-title span { color: var(--ink-3); opacity: 1; }
-  #printHost .sh-lanes { margin-top: 8px; padding-bottom: 0; }
-  #printHost .sh-lanes i { height: 4px; border-bottom-color: var(--track); }
-  #printHost .sh-body { padding: 0; }
-  #printHost .sh-foot { padding: 8px 0 0; }
-  #printHost .sh-card, #printHost .sh-tl tr { break-inside: avoid; }
-  #printHost .sh-school, #printHost .sh-day { break-after: avoid; }
+  #printHost { position: static; visibility: visible; }
 }
 </style>
 </head>
@@ -692,7 +733,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         </tbody>
       </table>`).join('');
   }
-  function buildSheet(list, action = '저장') {
+  function buildSheet(list) {
     const parts = filterParts();
     const now = new Date();
     const stamp = `${now.getFullYear()}. ${now.getMonth() + 1}. ${now.getDate()}. ${pad(now.getHours())}:${pad(now.getMinutes())}`;
@@ -706,7 +747,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         <div class="sh-lanes"><i></i><i></i><i></i></div>
       </div>
       <div class="sh-body">${state.view === 'time' ? sheetTime(list) : sheetStudents(list)}</div>
-      <div class="sh-foot"><span>${DATA.note ? `※ ${esc(DATA.note)}` : ''}</span><span>${stamp} ${action}</span></div>`;
+      <div class="sh-foot"><span>${DATA.note ? `※ ${esc(DATA.note)}` : ''}</span><span>${stamp} 저장</span></div>`;
     return el;
   }
   function fileName() {
@@ -719,6 +760,140 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     if (!document.fonts) return;
     await Promise.all(['400', '500', '700', '900'].map((w) => document.fonts.load(`${w} 16px "Noto Sans KR"`, text).catch(() => {})));
     await document.fonts.ready;
+  }
+
+  /* ---------- 인쇄: A4 쪽 나누기 ---------- */
+  // 학교(학생별) 또는 날짜(시간순)를 한 묶음으로 보고, 남은 자리에 안 들어가면 새 쪽에서 시작합니다.
+  // 한 쪽을 넘는 묶음은 이어지는 칸에 "계속" 제목을 붙여 나눕니다.
+  function make(tag, cls, html) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function studentGroups(list) {
+    return groupBy(groupStudents(list), (s) => s.school).map(([school, ss]) => ({
+      start(cont) {
+        const wrap = make('div', 'pp-group', `<div class="pp-group-title">${esc(school)}${cont ? '<small class="cont">(계속)</small>' : ''}<small>${ss.length}명</small></div>`);
+        const box = wrap.appendChild(make('div', 'pp-cards'));
+        return { wrap, box };
+      },
+      items: ss.map((s) => make('div', 'pp-card', `
+        <div class="pp-card-head"><b>${esc(s.name)}</b><span>${s.grade}학년 · ${esc(s.gender)}</span></div>
+        <table class="pp-rows"><tbody>${s.rows.map((r) => `
+          <tr><td class="d">${r.month}.${r.day}(${r.dow})</td><td class="t">${r.time}</td><td>${esc(r.event)}</td><td class="r">${badge(r.round)}</td></tr>`).join('')}
+        </tbody></table>
+        ${s.notes.map((n) => `<div class="pp-note"><i>!</i><span>${esc(n)}</span></div>`).join('')}`)),
+    }));
+  }
+  function timeGroups(list) {
+    return groupDays(list).map((d) => ({
+      start(cont) {
+        const wrap = make('div', 'pp-group', `
+          <div class="pp-group-title">${d.first.month}월 ${d.first.day}일 ${DOW_FULL[d.first.dow] || ''}
+            ${d.levels.map((l) => `<span class="pp-lvl">${l}</span>`).join('')}${cont ? '<small class="cont">(계속)</small>' : ''}
+            <small>학생 ${d.students}명 · 일정 ${d.count}건</small></div>`);
+        const table = wrap.appendChild(make('table', 'pp-tl', '<thead><tr><th>시간</th><th>종목</th><th>라운드</th><th>출전 학생</th></tr></thead><tbody></tbody>'));
+        return { wrap, box: table.tBodies[0] };
+      },
+      items: d.slots.map(({ r, items }) => make('tr', '', `
+        <td class="t">${r.time}</td>
+        <td class="e">${esc(r.event)}<small>${r.grade}학년 ${esc(r.gender)}</small></td>
+        <td class="r">${badge(r.round)}</td>
+        <td>${groupBy(items, (x) => x.school).map(([sc, xs]) => `<div><span class="sc">${esc(sc)}</span>${xs.map((x) => esc(x.name)).join(', ')}</div>`).join('')}
+          ${slotNotes(items).map((n) => `<div class="pp-note"><i>!</i><span>${esc(n.who)} — ${esc(n.note)}</span></div>`).join('')}</td>`)),
+    }));
+  }
+  function newPrintPage(nCols, meta) {
+    const page = make('section', 'pp', `
+      <header class="pp-head">
+        <div><div class="pp-eyebrow">2026 교육감기 학년별 육상대회</div><div class="pp-title">고성 경기일정<span>${meta.view}</span></div></div>
+        <div class="pp-meta">${esc(meta.filter)}<b>${meta.count}</b></div>
+      </header>
+      <div class="pp-body">${'<div class="pp-col"></div>'.repeat(nCols)}</div>
+      <footer class="pp-foot"><span>${meta.note}</span><span>${meta.stamp} 출력 · <b class="pp-no"></b></span></footer>`);
+    return { page, cols: [...page.querySelectorAll('.pp-col')] };
+  }
+  const usedHeight = (col) => {
+    const last = col.lastElementChild;
+    return last ? last.offsetTop + last.offsetHeight : 0;
+  };
+
+  function preparePrint() {
+    const host = $('#printHost');
+    host.replaceChildren();
+    const list = currentList();
+    if (!list.length) return;
+    const isTime = state.view === 'time';
+    const groups = isTime ? timeGroups(list) : studentGroups(list);
+    const nCols = isTime ? 1 : 2;
+    const now = new Date();
+    const parts = filterParts();
+    const meta = {
+      view: isTime ? '시간순' : '학생별',
+      filter: parts.length ? parts.join(' · ') : '전체 일정',
+      count: `학생 ${uniq(list.map((r) => r.sid)).length}명 · 일정 ${list.length}건`,
+      note: DATA.note ? `※ ${esc(DATA.note)}` : '',
+      stamp: `${now.getFullYear()}. ${now.getMonth() + 1}. ${now.getDate()}. ${pad(now.getHours())}:${pad(now.getMinutes())}`,
+    };
+
+    // 묶음마다 한 칸에 쌓았을 때의 높이를 먼저 잽니다.
+    const probe = newPrintPage(nCols, meta);
+    host.appendChild(probe.page);
+    for (const g of groups) {
+      const { wrap, box } = g.start(false);
+      probe.cols[0].appendChild(wrap);
+      g.items.forEach((it) => box.appendChild(it));
+      g.height = wrap.offsetHeight;
+      wrap.remove();
+    }
+    probe.page.remove();
+
+    const pages = [];
+    let cur, ci, col;
+    const addPage = () => {
+      cur = newPrintPage(nCols, meta);
+      host.appendChild(cur.page);
+      pages.push(cur);
+      ci = 0;
+      col = cur.cols[0];
+    };
+    const nextCol = () => {
+      if (ci + 1 < cur.cols.length) col = cur.cols[++ci];
+      else addPage();
+    };
+    const fits = () => usedHeight(col) <= col.clientHeight - 3;
+    const pageEmpty = () => cur.cols.every((c) => !c.childElementCount);
+    const spaceLeft = () => cur.cols.slice(ci).reduce((sum, c) => sum + Math.max(0, c.clientHeight - usedHeight(c)), 0);
+
+    addPage();
+    const pageCap = cur.cols.reduce((sum, c) => sum + c.clientHeight, 0);
+    for (const g of groups) {
+      if (!pageEmpty()) {
+        const left = spaceLeft();
+        // 남은 자리에 안 들어가면 새 쪽으로. 한 쪽을 넘는 큰 묶음은 남은 자리가 넉넉할 때만 이어서 씁니다.
+        if (g.height * 1.08 > left && (g.height <= pageCap * 0.95 || left < pageCap * 0.4)) addPage();
+        // 한 칸에 다 들어가는 묶음은 칸 중간에서 나뉘지 않게 다음 칸에서 시작합니다.
+        else if (col.childElementCount && g.height <= col.clientHeight && g.height + 16 > col.clientHeight - usedHeight(col)) nextCol();
+      }
+      let wrap = null;
+      let box = null;
+      g.items.forEach((item, i) => {
+        if (!box) {
+          ({ wrap, box } = g.start(i > 0));
+          col.appendChild(wrap);
+        }
+        box.appendChild(item);
+        if (fits() || (col.firstElementChild === wrap && box.childElementCount === 1)) return;
+        item.remove();
+        if (!box.childElementCount) wrap.remove();
+        nextCol();
+        ({ wrap, box } = g.start(i > 0));
+        col.appendChild(wrap);
+        box.appendChild(item);
+      });
+    }
+    pages.forEach((p, i) => { p.page.querySelector('.pp-no').textContent = `${i + 1} / ${pages.length}쪽`; });
   }
 
   let toastTimer = 0;
@@ -834,12 +1009,19 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 
   // 인쇄 버튼과 Ctrl+P 모두 지금 걸러진 일정표를 인쇄합니다. claude.ai 화면은 인쇄 창을 막아 버튼을 숨깁니다.
   $('#printBtn').hidden = inViewer;
-  $('#printBtn').addEventListener('click', () => window.print());
-  window.addEventListener('beforeprint', () => {
-    const list = currentList();
-    $('#printHost').replaceChildren(...(list.length ? [buildSheet(list, '출력')] : []));
+  let printPrepared = false;
+  $('#printBtn').addEventListener('click', async () => {
+    const btn = $('#printBtn');
+    btn.disabled = true;
+    preparePrint();
+    await loadFonts($('#printHost').textContent);  // 글꼴을 다 받은 뒤 다시 재야 쪽 나눔이 정확합니다
+    preparePrint();
+    printPrepared = true;
+    btn.disabled = false;
+    window.print();
   });
-  window.addEventListener('afterprint', () => $('#printHost').replaceChildren());
+  window.addEventListener('beforeprint', () => { if (!printPrepared) preparePrint(); });
+  window.addEventListener('afterprint', () => { printPrepared = false; });
   $('#saveBtn').addEventListener('click', savePreview);
   $('#modal').addEventListener('click', (e) => { if (e.target === e.currentTarget || e.target.closest('[data-close]')) closePreview(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) closePreview(); });
