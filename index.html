@@ -28,6 +28,10 @@
   --warn-ink: #8a5300;
   --warn-bg: #fff4d9;
   --mark: #ffe27a;
+  --ok: #1d7a4a;
+  --ok-soft: #e2f3e8;
+  --gold: #855a00;
+  --gold-soft: #fff0c2;
   --shadow: 0 10px 30px -16px rgba(24, 32, 46, .35);
   color-scheme: light;
 }
@@ -49,6 +53,10 @@
     --warn-ink: #f2c56d;
     --warn-bg: #33280f;
     --mark: #6d5a10;
+    --ok: #6fd39f;
+    --ok-soft: #16342a;
+    --gold: #f3c74f;
+    --gold-soft: #3b300f;
     --shadow: 0 10px 30px -16px rgba(0, 0, 0, .8);
     color-scheme: dark;
   }
@@ -70,6 +78,10 @@
   --warn-ink: #f2c56d;
   --warn-bg: #33280f;
   --mark: #6d5a10;
+  --ok: #6fd39f;
+  --ok-soft: #16342a;
+  --gold: #f3c74f;
+  --gold-soft: #3b300f;
   --shadow: 0 10px 30px -16px rgba(0, 0, 0, .8);
   color-scheme: dark;
 }
@@ -187,6 +199,60 @@ button { font: inherit; }
 
 mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1px; }
 
+/* ---------- 경기 결과 ---------- */
+.badge.out { background: var(--surface-2); color: var(--ink-3); }
+.res { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; }
+.res > span { padding: 1px 7px; border-radius: 6px; background: var(--surface-2); color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.res .rs-rank.top { background: var(--gold-soft); color: var(--gold); }
+.res .rs-rec { padding-inline: 2px; background: transparent; color: var(--ink); }
+.res .rs-adv { background: var(--ok-soft); color: var(--ok); }
+.res .rs-adv.no, .res .rs-st { color: var(--ink-3); }
+.live { display: flex; align-items: center; gap: 7px; margin: 8px 0 0; font-size: 13px; color: var(--ink-3); }
+.live i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: live 2s infinite; }
+.live.err i { background: var(--track); animation: none; }
+@keyframes live { 70%, 100% { box-shadow: 0 0 0 6px transparent; } }
+@media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
+
+/* ---------- 결과 입력 (관리자, 주소 끝 ?admin) ---------- */
+.admin-bar { padding-top: env(safe-area-inset-top, 0px); background: var(--ink); color: var(--bg); }
+.admin-bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding-block: 10px; font-size: 14px; }
+.ab-msg { flex: 1 1 220px; min-width: 0; }
+.ab-user { font-size: 13px; opacity: .75; }
+.admin-bar .btn { padding: 7px 12px; }
+.ab-list { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, currentColor 35%, transparent); }
+.ab-list ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ab-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ab-list p { margin: 0; font-size: 13px; opacity: .75; }
+.ab-add { display: flex; gap: 8px; }
+.ab-add input { flex: 1; min-width: 0; height: 38px; padding: 0 10px; border: 0; border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
+.can-edit [data-row] { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.can-edit .slots li[data-row] { margin: -4px -8px; padding: 4px 8px; border-radius: 8px; }
+.can-edit .slots li[data-row]:hover, .can-edit .slots li[data-row]:active { background: var(--surface-2); }
+.can-edit .person[data-row] { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.can-edit .person[data-row]:hover, .can-edit .person[data-row]:active { background: var(--line); }
+.ed .modal-card { width: min(480px, 100%); }
+.ed-body { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 16px; padding: 16px 18px; }
+.ed-what { margin: 0; font-size: 14px; color: var(--ink-2); }
+.ed-field { display: flex; flex-direction: column; gap: 8px; }
+.ed-label { font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.ed-ranks { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.ed-opts { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
+.ed-ranks button, .ed-opts button {
+  height: 44px; padding: 0; border: 1px solid var(--line-strong); border-radius: 10px;
+  background: var(--surface); color: var(--ink); font-size: 16px; font-weight: 700; cursor: pointer;
+}
+.ed-opts button { font-size: 15px; font-weight: 500; }
+.ed-ranks button[aria-pressed="true"], .ed-opts button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); font-weight: 700; }
+#edAdv button[data-v="y"][aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.ed-input {
+  width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--line-strong); border-radius: 10px;
+  background: var(--surface-2); color: var(--ink); font: inherit; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.ed-input:focus { outline: 0; border-color: var(--track); background: var(--surface); }
+.ed-input::placeholder { color: var(--ink-3); font-size: 15px; font-weight: 400; }
+.ed-meta { margin: 0; font-size: 12px; color: var(--ink-3); }
+@media (max-width: 600px) { .modal.ed { align-items: flex-start; } }
+
 /* ---------- 학생별 ---------- */
 .group { margin-top: 24px; }
 .group-title { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 19px; font-weight: 900; }
@@ -203,6 +269,8 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .day-label span { font-size: 12px; color: var(--ink-3); }
 .slots { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .slots li { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 8px; }
+.slots li .res { grid-column: 2 / -1; margin-top: -2px; }
+.slots li.dim, .person.dim { opacity: .55; }
 .time { font-weight: 700; font-variant-numeric: tabular-nums; }
 .event { font-weight: 500; }
 .note { display: flex; gap: 6px; align-items: flex-start; margin: 0; padding: 8px 10px; border-radius: 8px; background: var(--warn-bg); color: var(--warn-ink); font-size: 13px; font-weight: 500; }
@@ -226,6 +294,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .tl-who { display: flex; flex-wrap: wrap; gap: 6px; }
 .person { display: inline-flex; align-items: baseline; gap: 5px; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); font-size: 14px; font-weight: 500; }
 .person small { font-size: 12px; font-weight: 400; color: var(--ink-3); }
+.person .res { margin-left: 2px; font-size: 12px; }
 @media (min-width: 760px) {
   .tl-row { grid-template-columns: 84px 1fr; }
   .tl-time { padding-left: 20px; }
@@ -307,6 +376,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .sh-tl .sc { color: var(--ink-3); font-size: 12px; margin-right: 4px; }
 .sh-foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 18px; padding: 12px 32px 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
 .sh-foot span:last-child { white-space: nowrap; }
+.sheet .rp, .pp .rp { margin-left: .4em; font-weight: 700; color: var(--track); white-space: nowrap; }
 
 /* ---------- 인쇄: A4 쪽마다 머리말·쪽번호, 학교/날짜 단위로 쪽 나눔 ---------- */
 /* 화면에서는 보이지 않는 곳에 쪽을 미리 배치해 높이를 재고, 인쇄할 때만 꺼내 보입니다. */
@@ -372,6 +442,8 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 </head>
 <body>
 
+<div class="admin-bar" id="adminBar" hidden><div class="wrap"></div></div>
+
 <header class="hero">
   <div class="wrap hero-inner">
     <p class="eyebrow">2026 교육감기 학년별 육상대회</p>
@@ -429,6 +501,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     <span class="sep" aria-hidden="true"></span>
     <span class="badge cond">결승(진출 시)</span> 예선을 통과해야 출전
   </p>
+  <p class="live" id="live" aria-live="polite" hidden></p>
 
   <div id="results"></div>
 </main>
@@ -451,6 +524,48 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
       </div>
     </div>
   </div>
+</div>
+
+<div class="modal ed" id="editor" role="dialog" aria-modal="true" aria-labelledby="edTitle" hidden>
+  <form class="modal-card" id="edForm" tabindex="-1" autocomplete="off">
+    <div class="modal-head">
+      <h2 id="edTitle"></h2>
+      <button type="button" class="icon-btn" data-close aria-label="닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="ed-body">
+      <p class="ed-what" id="edWhat"></p>
+      <div class="ed-field">
+        <span class="ed-label" id="edRankLabel">순위</span>
+        <div class="ed-ranks" id="edRanks" role="group" aria-labelledby="edRankLabel">
+          <button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button><button type="button" data-v="6">6</button><button type="button" data-v="7">7</button><button type="button" data-v="8">8</button>
+        </div>
+        <input class="ed-input" id="edRank" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="9위 아래는 직접 입력" aria-labelledby="edRankLabel">
+      </div>
+      <label class="ed-field">
+        <span class="ed-label">기록</span>
+        <input class="ed-input" id="edRecord" maxlength="20" enterkeyhint="done">
+      </label>
+      <div class="ed-field" id="edAdvRow">
+        <span class="ed-label" id="edAdvLabel">결승</span>
+        <div class="ed-opts" id="edAdv" role="group" aria-labelledby="edAdvLabel">
+          <button type="button" data-v="">미정</button><button type="button" data-v="y">진출</button><button type="button" data-v="n">미진출</button>
+        </div>
+      </div>
+      <div class="ed-field">
+        <span class="ed-label" id="edStatusLabel">특이사항</span>
+        <div class="ed-opts" id="edStatus" role="group" aria-labelledby="edStatusLabel">
+          <button type="button" data-v="">없음</button><button type="button" data-v="기권">기권</button><button type="button" data-v="실격">실격</button><button type="button" data-v="불참">불참</button>
+        </div>
+      </div>
+      <p class="ed-meta" id="edMeta"></p>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="edClear">결과 지우기</button>
+      <div class="modal-actions"><button type="submit" class="btn-primary">저장</button></div>
+    </div>
+  </form>
 </div>
 
 <div class="toast" id="toast" role="status" hidden></div>
@@ -482,13 +597,20 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     return [...m];
   }
 
+  // 경기 결과를 찾는 열쇠. 계주는 팀 하나로 묶고, '결승(진출 시)'도 '결승'으로 봐서
+  // 엑셀의 라운드 표기(조 번호, 진출 시)가 바뀌어도 입력한 결과가 그대로 이어지게 합니다.
+  const isRelay = (event) => /R$/.test(event);
+  const resKey = (r, stage) => (isRelay(r.event)
+    ? [r.school, r.gender, r.event, stage]
+    : [r.school, r.grade, r.name, r.event, stage]).join('|');
+
   // 엑셀 한 행: [학교, 학년, 성별, 성명, 종목, 일자, 시간, 라운드, 비고]
   const rows = DATA.rows.map((r, i) => {
     const [school, grade, gender, name, event, dateRaw, time, round, note] = r.map((v) => (v == null ? '' : v));
     const m = String(dateRaw).match(/(\d+)\.\s*(\d+)\.\s*\((.)\)/) || [];
     const month = +m[1], day = +m[2], dow = m[3] || '';
     const t = String(time).padStart(5, '0');
-    return {
+    const row = {
       i, school: String(school), grade: +grade, gender: String(gender), name: String(name), event: String(event),
       time: t, round: String(round), note: String(note), month, day, dow,
       dateKey: `${pad(month)}-${pad(day)}`,
@@ -496,6 +618,9 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
       sid: `${school}|${grade}|${name}`,
       level: /중$/.test(school) ? '중등부' : '초등부',
     };
+    row.key = resKey(row, row.round.startsWith('예선') ? '예선' : '결승');
+    row.heatKey = resKey(row, '예선');
+    return row;
   });
 
   const SCHOOLS = uniq(rows.map((r) => r.school));
@@ -583,6 +708,44 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
   const roundKind = (round) => (round.startsWith('예선') ? 'heat' : round.includes('진출') ? 'cond' : 'final');
   const badge = (round) => `<span class="badge ${roundKind(round)}">${esc(round)}</span>`;
 
+  /* ---------- 경기 결과 ---------- */
+  // RESULTS[열쇠] = { rank, record, adv(true 결승 진출 · false 미진출), status(기권·실격·불참), by, at }
+  let RESULTS = {};
+  const resOf = (r) => RESULTS[r.key];
+  // '결승(진출 시)' 줄은 같은 종목 예선 결과의 진출 여부를 따릅니다.
+  const advOf = (r) => (roundKind(r.round) === 'cond' ? (RESULTS[r.heatKey] || {}).adv : undefined);
+  function roundBadge(r) {
+    const adv = advOf(r);
+    if (adv === true) return '<span class="badge final">결승 진출</span>';
+    if (adv === false) return '<span class="badge out">미진출</span>';
+    return badge(r.round);
+  }
+  function resParts(r) {
+    const v = resOf(r);
+    if (!v) return [];
+    return [
+      v.status && ['rs-st', v.status],
+      v.rank && [v.rank <= 3 ? 'rs-rank top' : 'rs-rank', `${v.rank}위`],
+      v.record && ['rs-rec', /뛰기|던지기/.test(r.event) && /^\d+(\.\d+)?$/.test(v.record) ? `${v.record}m` : v.record],
+      v.adv === true && ['rs-adv', '결승 진출'],
+      v.adv === false && ['rs-adv no', '미진출'],
+    ].filter(Boolean);
+  }
+  function resHtml(r) {
+    const parts = resParts(r);
+    return parts.length ? `<span class="res">${parts.map(([cls, text]) => `<span class="${cls}">${esc(text)}</span>`).join('')}</span>` : '';
+  }
+  // 이미지·인쇄용 짧은 글자: "1위 · 12.34"
+  function resPlain(r) {
+    const text = resParts(r).map(([, t]) => t).join(' · ');
+    return text ? `<span class="rp">${esc(text)}</span>` : '';
+  }
+  // 관리자가 로그인하면 일정 줄과 이름표를 눌러 결과를 입력할 수 있게 합니다.
+  function rowAttrs(r, cls = '') {
+    const c = [cls, advOf(r) === false && 'dim'].filter(Boolean).join(' ');
+    return (c ? ` class="${c}"` : '') + (admin.ok ? ` data-row="${r.i}" role="button" tabindex="0"` : '');
+  }
+
   function studentView(list, hl) {
     const students = groupStudents(list);
     return groupBy(students, (s) => s.school).map(([school, ss]) => `
@@ -601,7 +764,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
               <div class="day">
                 <div class="day-label"><b>${rs[0].month}.${rs[0].day}</b><span>${rs[0].dow}요일</span></div>
                 <ul class="slots">${rs.map((r) => `
-                  <li><span class="time">${r.time}</span><span class="event">${hl(r.event)}</span>${badge(r.round)}</li>`).join('')}
+                  <li${rowAttrs(r)}><span class="time">${r.time}</span><span class="event">${hl(r.event)}</span>${roundBadge(r)}${resHtml(r)}</li>`).join('')}
                 </ul>
               </div>`).join('')}
             ${s.notes.map((n) => `<p class="note">${ICON_WARN}<span>${esc(n)}</span></p>`).join('')}
@@ -628,7 +791,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
             <div class="tl-time">${r.time}</div>
             <div class="tl-body">
               <div class="tl-what"><span class="event">${hl(r.event)}</span><span class="meta">${r.grade}학년 ${esc(r.gender)}</span>${badge(r.round)}</div>
-              <div class="tl-who">${items.map((x) => `<span class="person"><small>${hl(x.school)}</small>${hl(x.name)}</span>`).join('')}</div>
+              <div class="tl-who">${items.map((x) => `<span${rowAttrs(x, 'person')}><small>${hl(x.school)}</small>${hl(x.name)}${resHtml(x)}</span>`).join('')}</div>
               ${slotNotes(items).map((n) => `<p class="note">${ICON_WARN}<span>${esc(n.who)} — ${esc(n.note)}</span></p>`).join('')}
             </div>
           </li>`;
@@ -666,6 +829,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     $('#clearQ').hidden = !state.q;
     $('#exportBtn').disabled = !list.length;
     $('#printBtn').disabled = !list.length;
+    renderLive();
     writeHash();
   }
 
@@ -711,7 +875,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         <div class="sh-card">
           <div class="sh-card-head"><b>${esc(s.name)}</b><span>${esc(s.school)} · ${s.grade}학년 · ${esc(s.gender)}</span></div>
           <table class="sh-rows"><tbody>${s.rows.map((r) => `
-            <tr><td class="d">${r.month}.${r.day}(${r.dow})</td><td class="t">${r.time}</td><td>${esc(r.event)}</td><td class="r">${badge(r.round)}</td></tr>`).join('')}
+            <tr><td class="d">${r.month}.${r.day}(${r.dow})</td><td class="t">${r.time}</td><td>${esc(r.event)}${resPlain(r)}</td><td class="r">${roundBadge(r)}</td></tr>`).join('')}
           </tbody></table>
           ${s.notes.map((n) => `<div class="sh-note"><i>!</i><span>${esc(n)}</span></div>`).join('')}
         </div>`).join('')}
@@ -727,7 +891,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
             <td class="t">${r.time}</td>
             <td class="e">${esc(r.event)}<small>${r.grade}학년 ${esc(r.gender)}</small></td>
             <td class="r">${badge(r.round)}</td>
-            <td>${groupBy(items, (x) => x.school).map(([sc, xs]) => `<div><span class="sc">${esc(sc)}</span>${xs.map((x) => esc(x.name)).join(', ')}</div>`).join('')}
+            <td>${groupBy(items, (x) => x.school).map(([sc, xs]) => `<div><span class="sc">${esc(sc)}</span>${xs.map((x) => esc(x.name) + resPlain(x)).join(', ')}</div>`).join('')}
               ${slotNotes(items).map((n) => `<div class="sh-note"><i>!</i><span>${esc(n.who)} — ${esc(n.note)}</span></div>`).join('')}</td>
           </tr>`).join('')}
         </tbody>
@@ -781,7 +945,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
       items: ss.map((s) => make('div', 'pp-card', `
         <div class="pp-card-head"><b>${esc(s.name)}</b><span>${s.grade}학년 · ${esc(s.gender)}</span></div>
         <table class="pp-rows"><tbody>${s.rows.map((r) => `
-          <tr><td class="d">${r.month}.${r.day}(${r.dow})</td><td class="t">${r.time}</td><td>${esc(r.event)}</td><td class="r">${badge(r.round)}</td></tr>`).join('')}
+          <tr><td class="d">${r.month}.${r.day}(${r.dow})</td><td class="t">${r.time}</td><td>${esc(r.event)}${resPlain(r)}</td><td class="r">${roundBadge(r)}</td></tr>`).join('')}
         </tbody></table>
         ${s.notes.map((n) => `<div class="pp-note"><i>!</i><span>${esc(n)}</span></div>`).join('')}`)),
     }));
@@ -800,7 +964,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
         <td class="t">${r.time}</td>
         <td class="e">${esc(r.event)}<small>${r.grade}학년 ${esc(r.gender)}</small></td>
         <td class="r">${badge(r.round)}</td>
-        <td>${groupBy(items, (x) => x.school).map(([sc, xs]) => `<div><span class="sc">${esc(sc)}</span>${xs.map((x) => esc(x.name)).join(', ')}</div>`).join('')}
+        <td>${groupBy(items, (x) => x.school).map(([sc, xs]) => `<div><span class="sc">${esc(sc)}</span>${xs.map((x) => esc(x.name) + resPlain(x)).join(', ')}</div>`).join('')}
           ${slotNotes(items).map((n) => `<div class="pp-note"><i>!</i><span>${esc(n.who)} — ${esc(n.note)}</span></div>`).join('')}</td>`)),
     }));
   }
@@ -984,6 +1148,221 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     $('#exportBtn').focus();
   }
 
+  /* ---------- 경기 결과: Firebase에서 실시간으로 받기 ---------- */
+  // 결과는 Firestore 문서 meet/results 하나에 모읍니다. 읽기는 누구나, 쓰기는 관리자만(firestore.rules).
+  const FB_URL = (m) => `https://www.gstatic.com/firebasejs/12.19.0/firebase-${m}.js`;
+  const FB_CONFIG = {
+    apiKey: 'AIzaSyBfA7-Uz7z5I3FM_MmqbknDg1JKt6xXv0A',
+    authDomain: 'goseong-athletics-2026.firebaseapp.com',
+    projectId: 'goseong-athletics-2026',
+    appId: '1:51293403660:web:22d35298a3c66ce9984c29',
+  };
+  const ADMIN = new URLSearchParams(location.search).has('admin');
+  const admin = { ready: false, user: null, ok: false, list: [], showList: false, error: '' };
+  let fb = null;
+  let live = '';
+  let resultsAt = null;
+
+  async function startResults() {
+    try {
+      const [{ initializeApp }, fs] = await Promise.all([import(FB_URL('app')), import(FB_URL('firestore'))]);
+      const app = initializeApp(FB_CONFIG);
+      const db = fs.getFirestore(app);
+      fb = { app, db, fs, ref: fs.doc(db, 'meet', 'results') };
+    } catch (err) {
+      console.error(err);
+      live = 'error';
+      admin.error = '결과 입력 기능을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.';
+      renderLive();
+      renderAdmin();
+      return;
+    }
+    fb.fs.onSnapshot(fb.ref, (snap) => {
+      const d = snap.data({ serverTimestamps: 'estimate' }) || {};
+      RESULTS = d.r || {};
+      resultsAt = d.updatedAt ? d.updatedAt.toDate() : null;
+      live = 'on';
+      render();
+    }, (err) => {
+      console.error(err);
+      live = 'error';
+      renderLive();
+    });
+    if (ADMIN) startAdmin();
+  }
+
+  function renderLive() {
+    const el = $('#live');
+    el.hidden = !live;
+    el.classList.toggle('err', live === 'error');
+    const n = Object.keys(RESULTS).length;
+    const at = resultsAt ? ` · ${pad(resultsAt.getHours())}:${pad(resultsAt.getMinutes())} 갱신` : '';
+    el.innerHTML = live === 'error' ? '<i></i>경기 결과를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.'
+      : n ? `<i></i>경기 결과 실시간 반영 중 · ${n}건${at}`
+      : '<i></i>경기 결과가 입력되면 이 화면에 바로 나타나요.';
+  }
+
+  /* ---------- 결과 입력 (관리자) ---------- */
+  // 주소 끝에 ?admin 을 붙여 열고 구글 계정으로 로그인합니다. 카카오톡 같은 앱 안 브라우저는 구글 로그인을 막습니다.
+  const IN_KAKAO = /KAKAOTALK/i.test(navigator.userAgent);
+  const IN_APP = IN_KAKAO || /NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|BAND\//i.test(navigator.userAgent);
+
+  async function startAdmin() {
+    try {
+      fb.au = await import(FB_URL('auth'));
+    } catch (err) {
+      console.error(err);
+      admin.error = '로그인 기능을 불러오지 못했어요. 새로고침해 주세요.';
+      renderAdmin();
+      return;
+    }
+    fb.auth = fb.au.getAuth(fb.app);
+    fb.auth.languageCode = 'ko';
+    fb.au.onAuthStateChanged(fb.auth, async (user) => {
+      Object.assign(admin, { user, ok: false, list: [], error: '' });
+      // 관리자 목록은 관리자만 읽을 수 있으므로, 읽히면 입력 권한이 있는 계정입니다.
+      if (user) {
+        try {
+          admin.list = await loadAdmins();
+          admin.ok = true;
+        } catch (err) {
+          if (err.code !== 'permission-denied') {
+            console.error(err);
+            admin.error = '입력 권한을 확인하지 못했어요. 새로고침해 주세요.';
+          }
+        }
+      }
+      admin.ready = true;
+      document.body.classList.toggle('can-edit', admin.ok);
+      renderAdmin();
+      render();
+    });
+  }
+  async function loadAdmins() {
+    const snap = await fb.fs.getDocs(fb.fs.collection(fb.db, 'admins'));
+    return snap.docs.map((d) => d.id).sort();
+  }
+  async function signIn() {
+    const { au, auth } = fb;
+    const provider = new au.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    try {
+      await au.signInWithPopup(auth, provider);
+    } catch (err) {
+      if (err.code === 'auth/popup-blocked') return au.signInWithRedirect(auth, provider);
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') return;
+      console.error(err);
+      toast(err.code === 'auth/operation-not-allowed' ? 'Firebase에서 구글 로그인이 아직 꺼져 있어요.'
+        : err.code === 'auth/unauthorized-domain' ? '이 주소는 Firebase 승인된 도메인에 아직 없어요.'
+        : '로그인하지 못했어요. 잠시 뒤 다시 해 주세요.');
+    }
+  }
+
+  function renderAdmin() {
+    const bar = $('#adminBar');
+    bar.hidden = !ADMIN;
+    if (!ADMIN) return;
+    const u = admin.user;
+    let html;
+    if (admin.error) {
+      html = `<span class="ab-msg">${esc(admin.error)}</span>`;
+    } else if (IN_APP && !u) {
+      html = '<span class="ab-msg"><b>앱 안의 브라우저에서는 구글 로그인이 막혀 있어요.</b> Safari나 Chrome으로 열어 주세요.</span>' +
+        (IN_KAKAO ? '<button type="button" class="btn" data-admin="external">다른 브라우저로 열기</button>' : '');
+    } else if (!admin.ready) {
+      html = '<span class="ab-msg">결과 입력 기능을 준비하는 중…</span>';
+    } else if (!u) {
+      html = '<span class="ab-msg"><b>결과 입력</b> · 관리자 구글 계정으로 로그인해 주세요.</span><button type="button" class="btn" data-admin="login">Google 로그인</button>';
+    } else if (!admin.ok) {
+      html = `<span class="ab-msg"><b>${esc(u.email)}</b> 계정에는 입력 권한이 없어요.</span><button type="button" class="btn" data-admin="login">다른 계정으로</button>`;
+    } else {
+      html = `<span class="ab-msg"><b>결과 입력 중</b> · 이름이나 일정을 누르면 입력 창이 열려요.</span>
+        <span class="ab-user">${esc(u.email)}</span>
+        <button type="button" class="btn" data-admin="admins" aria-expanded="${admin.showList}">관리자</button>
+        <button type="button" class="btn" data-admin="logout">로그아웃</button>`;
+      if (admin.showList) html += `
+        <div class="ab-list">
+          <p>여기 추가한 구글 계정도 결과를 입력할 수 있어요. 추가·삭제는 처음 관리자만 할 수 있어요.</p>
+          <ul>${admin.list.map((e) => `<li><span>${esc(e)}</span><button type="button" class="btn" data-del="${esc(e)}">삭제</button></li>`).join('')}</ul>
+          <form class="ab-add"><input type="email" required placeholder="추가할 구글 계정 이메일" aria-label="추가할 관리자 이메일" autocomplete="off"><button type="submit" class="btn">추가</button></form>
+        </div>`;
+    }
+    bar.querySelector('.wrap').innerHTML = html;
+  }
+  async function editAdmins(op) {
+    try {
+      await op();
+      admin.list = await loadAdmins();
+      renderAdmin();
+    } catch (err) {
+      console.error(err);
+      toast(err.code === 'permission-denied' ? '관리자 추가·삭제는 처음 관리자만 할 수 있어요.' : '바꾸지 못했어요. 잠시 뒤 다시 해 주세요.');
+    }
+  }
+
+  let editing = null;
+  const recordHint = (event) => (/뛰기|던지기/.test(event) ? '예: 3.45 (m)' : /^(800|1500|3000)m$|4×400/.test(event) ? '예: 2:41.30' : '예: 13.45');
+  const pressed = (group, v) => group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+  const pressedValue = (group) => { const b = group.querySelector('[aria-pressed="true"]'); return b ? b.dataset.v : ''; };
+
+  function openEditor(r) {
+    const v = resOf(r) || {};
+    editing = { r, heat: r.round.startsWith('예선') };
+    const who = isRelay(r.event)
+      ? `팀 ${uniq(rows.filter((x) => x.key === r.key).map((x) => x.name)).join(', ')}`
+      : `${r.school} ${r.grade}학년 ${r.gender}`;
+    $('#edTitle').textContent = isRelay(r.event) ? `${r.school} ${r.event}` : r.name;
+    $('#edWhat').textContent = `${r.event} ${r.round} · ${r.month}.${r.day}(${r.dow}) ${r.time} · ${who}`;
+    $('#edRank').value = v.rank || '';
+    pressed($('#edRanks'), String(v.rank || ''));
+    $('#edRecord').value = v.record || '';
+    $('#edRecord').placeholder = recordHint(r.event);
+    $('#edAdvRow').hidden = !editing.heat;
+    pressed($('#edAdv'), v.adv === true ? 'y' : v.adv === false ? 'n' : '');
+    pressed($('#edStatus'), v.status || '');
+    const at = v.at && v.at.toDate ? v.at.toDate() : null;
+    $('#edMeta').textContent = v.by ? `마지막 입력 ${v.by}${at ? ` · ${pad(at.getHours())}:${pad(at.getMinutes())}` : ''}` : '';
+    $('#edClear').hidden = !resOf(r);
+    $('#editor').hidden = false;
+    document.body.style.overflow = 'hidden';
+    $('#edForm').focus();
+  }
+  function closeEditor() {
+    $('#editor').hidden = true;
+    document.body.style.overflow = '';
+    editing = null;
+  }
+  function saveEditor(e) {
+    e.preventDefault();
+    if (!editing) return;
+    const { r, heat } = editing;
+    const rank = parseInt($('#edRank').value, 10);
+    const record = $('#edRecord').value.trim();
+    const adv = heat ? pressedValue($('#edAdv')) : '';
+    const status = pressedValue($('#edStatus'));
+    const v = {};
+    if (rank > 0) v.rank = rank;
+    if (record) v.record = record;
+    if (adv) v.adv = adv === 'y';
+    if (status) v.status = status;
+    closeEditor();
+    writeResult(r.key, Object.keys(v).length ? v : null);
+  }
+  async function writeResult(key, v) {
+    const { fs, ref } = fb;
+    toast('저장하는 중…');
+    try {
+      // 이 학생(계주는 팀) 칸만 바꾸고 다른 결과는 건드리지 않습니다.
+      await fs.setDoc(ref,
+        { r: { [key]: v ? { ...v, by: admin.user.email, at: fs.serverTimestamp() } : fs.deleteField() }, updatedAt: fs.serverTimestamp() },
+        { mergeFields: [new fs.FieldPath('r', key), 'updatedAt'] });
+      toast(v ? '저장했어요.' : '결과를 지웠어요.');
+    } catch (err) {
+      console.error(err);
+      toast(err.code === 'permission-denied' ? '입력 권한이 없는 계정이에요.' : '저장하지 못했어요. 인터넷 연결을 확인하고 다시 해 주세요.');
+    }
+  }
+
   /* ---------- 이벤트 ---------- */
   function reset() {
     Object.assign(state, { q: '', school: '', date: '' });
@@ -1024,13 +1403,77 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
   window.addEventListener('afterprint', () => { printPrepared = false; });
   $('#saveBtn').addEventListener('click', savePreview);
   $('#modal').addEventListener('click', (e) => { if (e.target === e.currentTarget || e.target.closest('[data-close]')) closePreview(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) closePreview(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!$('#editor').hidden) closeEditor();
+    else if (!$('#modal').hidden) closePreview();
+  });
   window.addEventListener('hashchange', () => { readHash(); render(); });
+
+  // 결과 입력: 일정 줄·이름표를 누르면 입력 창, 창 바깥을 눌러도 닫히지 않게 해 입력 중 실수로 사라지지 않게 합니다.
+  $('#results').addEventListener('click', (e) => {
+    const el = admin.ok && e.target.closest('[data-row]');
+    if (el) openEditor(rows[+el.dataset.row]);
+  });
+  $('#results').addEventListener('keydown', (e) => {
+    const el = admin.ok && (e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-row]');
+    if (el) { e.preventDefault(); openEditor(rows[+el.dataset.row]); }
+  });
+  $('#editor').addEventListener('click', (e) => { if (e.target.closest('[data-close]')) closeEditor(); });
+  $('#edForm').addEventListener('submit', saveEditor);
+  $('#edRanks').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const v = $('#edRank').value === b.dataset.v ? '' : b.dataset.v;
+    $('#edRank').value = v;
+    pressed($('#edRanks'), v);
+  });
+  $('#edRank').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+    pressed($('#edRanks'), e.target.value);
+  });
+  ['#edAdv', '#edStatus'].forEach((sel) => $(sel).addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (b) pressed($(sel), b.dataset.v);
+  }));
+  $('#edClear').addEventListener('click', () => {
+    if (!editing || !confirm('이 결과를 지울까요?')) return;
+    const { r } = editing;
+    closeEditor();
+    writeResult(r.key, null);
+  });
+  $('#adminBar').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-admin], [data-del]');
+    if (!b) return;
+    const act = b.dataset.admin;
+    if (act === 'login') signIn();
+    else if (act === 'logout') fb.au.signOut(fb.auth);
+    else if (act === 'external') location.href = `kakaotalk://web/openExternal?url=${encodeURIComponent(location.href)}`;
+    else if (act === 'admins') { admin.showList = !admin.showList; renderAdmin(); }
+    else if (b.dataset.del && confirm(`${b.dataset.del} 계정을 관리자에서 뺄까요?`)) {
+      editAdmins(() => fb.fs.deleteDoc(fb.fs.doc(fb.db, 'admins', b.dataset.del)));
+    }
+  });
+  $('#adminBar').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = e.target.querySelector('input').value.trim().toLowerCase();
+    if (email) editAdmins(() => fb.fs.setDoc(fb.fs.doc(fb.db, 'admins', email), { addedBy: admin.user.email, at: fb.fs.serverTimestamp() }));
+  });
+
+  if (ADMIN) {
+    // 관리자는 대개 그날 경기를 시간순으로 보며 입력합니다.
+    const now = new Date();
+    const today = `${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    state.view = 'time';
+    if (dateByKey[today]) state.date = today;
+  }
 
   document.documentElement.lang = 'ko';
   setupStatic();
   readHash();
   render();
+  renderAdmin();
+  startResults();
 })();
 </script>
 </body>
