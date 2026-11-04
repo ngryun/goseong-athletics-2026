@@ -1,0 +1,43 @@
+name: 공식 경기 결과 갱신
+
+on:
+  schedule:
+    # 대회 기간(11/4~11/7) 한국 시간 08~19시에 10분마다. cron은 UTC 기준이고, GitHub 사정에 따라 늦어질 수 있음
+    - cron: "*/10 23,0-10 3-7 11 *"
+  workflow_dispatch:       # Actions 탭에서 수동 실행
+    inputs:
+      all:
+        description: "이미 받은 결과까지 전부 다시 읽기"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: results
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 공식 기록 가져오기
+        run: python update_results.py ${{ inputs.all && '--all' || '' }}
+
+      - name: 바뀌었으면 커밋 (GitHub Pages가 자동으로 다시 배포)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add official.json
+          if ! git diff --cached --quiet; then
+            git commit -m "공식 결과 갱신 $(TZ=Asia/Seoul date '+%m-%d %H:%M')"
+            git pull --rebase -q
+            git push
+          fi

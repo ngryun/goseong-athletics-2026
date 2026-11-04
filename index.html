@@ -206,7 +206,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .res .rs-rank.top { background: var(--gold-soft); color: var(--gold); }
 .res .rs-rec { padding-inline: 2px; background: transparent; color: var(--ink); }
 .res .rs-adv { background: var(--ok-soft); color: var(--ok); }
-.res .rs-adv.no, .res .rs-st { color: var(--ink-3); }
+.res .rs-adv.no, .res .rs-st { background: var(--surface-2); color: var(--ink-3); }
 .live { display: flex; align-items: center; gap: 7px; margin: 8px 0 0; font-size: 13px; color: var(--ink-3); }
 .live i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: live 2s infinite; }
 .live.err i { background: var(--track); animation: none; }
@@ -709,11 +709,17 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
   const badge = (round) => `<span class="badge ${roundKind(round)}">${esc(round)}</span>`;
 
   /* ---------- 경기 결과 ---------- */
-  // RESULTS[열쇠] = { rank, record, adv(true 결승 진출 · false 미진출), status(기권·실격·불참), by, at }
+  // RESULTS[열쇠] = 관리자 입력 { rank, record, adv(true 결승 진출 · false 미진출), status(기권·실격·불참), by, at }
+  // OFFICIAL[열쇠] = 공식 기록(official.json, update_results.py가 만듦). 같은 칸은 공식 기록이 앞섭니다.
   let RESULTS = {};
-  const resOf = (r) => RESULTS[r.key];
+  let OFFICIAL = {};
+  function resByKey(key) {
+    const m = RESULTS[key], o = OFFICIAL[key];
+    return m || o ? { ...m, ...o } : undefined;
+  }
+  const resOf = (r) => resByKey(r.key);
   // '결승(진출 시)' 줄은 같은 종목 예선 결과의 진출 여부를 따릅니다.
-  const advOf = (r) => (roundKind(r.round) === 'cond' ? (RESULTS[r.heatKey] || {}).adv : undefined);
+  const advOf = (r) => (roundKind(r.round) === 'cond' ? (resByKey(r.heatKey) || {}).adv : undefined);
   function roundBadge(r) {
     const adv = advOf(r);
     if (adv === true) return '<span class="badge final">결승 진출</span>';
@@ -862,7 +868,8 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     $('#statSchools').innerHTML = `${SCHOOLS.length}<small>개교</small>`;
     $('#statStudents').innerHTML = `${uniq(rows.map((r) => r.sid)).length}<small>명</small>`;
     $('#statRows').innerHTML = `${rows.length}<small>건</small>`;
-    $('#foot').innerHTML = DATA.note ? DATA.note.split('/').map((s) => `<p>※ ${esc(s.trim())}</p>`).join('') : '';
+    $('#foot').innerHTML = (DATA.note ? DATA.note.split('/').map((s) => `<p>※ ${esc(s.trim())}</p>`).join('') : '') +
+      '<p>※ 경기 결과는 강원체육대회 운영지원포털 공식 기록을 10분마다 자동으로 가져오고, 현장에서 먼저 입력한 결과도 함께 보여 줍니다.</p>';
   }
 
   /* ---------- 이미지 내보내기 ---------- */
@@ -1193,13 +1200,35 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 
   function renderLive() {
     const el = $('#live');
-    el.hidden = !live;
-    el.classList.toggle('err', live === 'error');
-    const n = Object.keys(RESULTS).length;
-    const at = resultsAt ? ` · ${pad(resultsAt.getHours())}:${pad(resultsAt.getMinutes())} 갱신` : '';
-    el.innerHTML = live === 'error' ? '<i></i>경기 결과를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.'
+    const n = new Set([...Object.keys(RESULTS), ...Object.keys(OFFICIAL)]).size;
+    const last = [resultsAt, officialAt].filter(Boolean).sort((a, b) => b - a)[0];
+    const at = last ? ` · ${pad(last.getHours())}:${pad(last.getMinutes())} 갱신` : '';
+    const failed = live === 'error' && !n;
+    el.hidden = !live && !n;
+    el.classList.toggle('err', failed);
+    el.innerHTML = failed ? '<i></i>경기 결과를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.'
       : n ? `<i></i>경기 결과 실시간 반영 중 · ${n}건${at}`
       : '<i></i>경기 결과가 입력되면 이 화면에 바로 나타나요.';
+  }
+
+  /* ---------- 경기 결과: 공식 기록 ---------- */
+  // GitHub Actions가 대회 중 10분마다 포털 공식 기록을 official.json으로 올리고, 화면은 1분마다 확인합니다.
+  let officialText = '';
+  let officialAt = null;
+  async function loadOfficial() {
+    try {
+      const res = await fetch(`official.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const text = await res.text();
+      if (text === officialText) return;
+      officialText = text;
+      const d = JSON.parse(text);
+      OFFICIAL = d.r || {};
+      officialAt = d.updatedAt ? new Date(d.updatedAt) : null;
+      render();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /* ---------- 결과 입력 (관리자) ---------- */
@@ -1321,8 +1350,11 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     pressed($('#edAdv'), v.adv === true ? 'y' : v.adv === false ? 'n' : '');
     pressed($('#edStatus'), v.status || '');
     const at = v.at && v.at.toDate ? v.at.toDate() : null;
-    $('#edMeta').textContent = v.by ? `마지막 입력 ${v.by}${at ? ` · ${pad(at.getHours())}:${pad(at.getMinutes())}` : ''}` : '';
-    $('#edClear').hidden = !resOf(r);
+    $('#edMeta').textContent = [
+      OFFICIAL[r.key] && '공식 기록이 올라와 있어 화면에는 공식 결과가 먼저 보여요.',
+      v.by && `마지막 입력 ${v.by}${at ? ` · ${pad(at.getHours())}:${pad(at.getMinutes())}` : ''}`,
+    ].filter(Boolean).join(' ');
+    $('#edClear').hidden = !RESULTS[r.key];
     $('#editor').hidden = false;
     document.body.style.overflow = 'hidden';
     $('#edForm').focus();
@@ -1474,6 +1506,9 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
   render();
   renderAdmin();
   startResults();
+  loadOfficial();
+  setInterval(() => { if (!document.hidden) loadOfficial(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) loadOfficial(); });
 })();
 </script>
 </body>

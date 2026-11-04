@@ -26,3 +26,12 @@ python update_data.py "엑셀 파일 경로"
   계주는 팀 단위로, `결승(진출 시)`는 `결승`으로 묶어 저장하므로 엑셀의 라운드 표기가 바뀌어도 결과가 이어집니다.
 - 입력 권한은 `firestore.rules`에 적힌 처음 관리자와, 관리자 화면의 "관리자"에서 추가한 계정에만 있습니다.
   규칙을 고치면 `firebase deploy --only firestore`로 반영합니다.
+
+## 공식 결과 자동 반영
+
+- `update_results.py` — [강원체육대회 운영지원포털](https://gwe.go.kr/sports/race/view.do?key=2501060067&spcpSeCd=004&raceClsCd=001)의 육상 공식 기록을
+  고성 학생과 맞춰 `official.json`에 적습니다. 예선 통과 여부는 결승 명단에 이름이 있는지로 판단합니다. 표준 라이브러리만 씁니다.
+  이미 받은 결과는 다시 읽지 않으며, 공식 기록이 고쳐졌을 때는 `--all`로 전부 다시 읽습니다.
+- `.github/workflows/results.yml` — 대회 기간(11/4~11/7) 08~19시에 10분마다 실행 → 바뀌면 커밋 → Pages가 다시 배포합니다.
+  Actions 탭에서 수동 실행도 됩니다. 페이지는 1분마다 `official.json`을 확인하고, 같은 칸은 공식 기록이 관리자 입력보다 앞섭니다.
+- Actions가 커밋을 올리므로 로컬에서 고치기 전에는 먼저 `git pull` 합니다.
