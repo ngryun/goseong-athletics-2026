@@ -12,6 +12,10 @@ on:
         description: "이미 받은 결과까지 전부 다시 읽기"
         type: boolean
         default: false
+      handoff:
+        description: "(자동으로 이어 붙일 때 쓰는 값 — 손대지 않아도 됩니다)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -19,8 +23,8 @@ permissions:
 
 concurrency:
   group: results
-  # 수동·이어 붙인 실행은 앞 실행을 끝내고 바로 시작, 예약 실행은 돌고 있는 실행이 있으면 기다립니다.
-  cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' }}
+  # 손으로 실행하면 돌던 실행을 끝내고 바로 시작. 이어 붙인 실행·예약 실행은 앞 실행이 끝나길 기다립니다.
+  cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' && !inputs.handoff }}
 
 jobs:
   update:
@@ -42,7 +46,7 @@ jobs:
           set +e   # 한 번 실패(포털·네트워크 오류)해도 멈추지 않고 다음 확인 때 다시
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          sync() { git pull -q --rebase || { git rebase --abort 2>/dev/null; git reset -q --hard origin/main; }; }
+          sync() { git pull -q --rebase || { git rebase --abort 2>/dev/null; git reset -q --hard "@{u}"; }; }
           handoff=$((SECONDS + 330 * 60))   # 5시간 30분 뒤 다음 실행으로 넘김
           while :; do
             now=$(TZ=Asia/Seoul date +%Y%m%d%H%M)
@@ -53,12 +57,12 @@ jobs:
               if python update_results.py $ARGS; then ARGS=""; fi
               git add official.json
               git diff --cached --quiet || git commit -q -m "공식 결과 갱신 $(TZ=Asia/Seoul date '+%m-%d %H:%M')"
-              if [ "$(git rev-list --count origin/main..HEAD)" != 0 ]; then
+              if [ "$(git rev-list --count "@{u}..HEAD")" != 0 ]; then
                 sync; git push -q || echo "푸시 실패 — 다음 확인 때 다시"
               fi
             fi
             if [ "$SECONDS" -ge "$handoff" ]; then
-              gh workflow run results.yml --ref "$GITHUB_REF_NAME" && echo "다음 실행으로 넘김" && exit 0
+              gh workflow run results.yml --ref "$GITHUB_REF_NAME" -f handoff=true && echo "다음 실행으로 넘김" && exit 0
               echo "다음 실행 띄우기 실패 — 예약 실행이 다시 이어 줌"; exit 1
             fi
             sleep 300
