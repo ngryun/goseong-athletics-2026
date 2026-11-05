@@ -1,10 +1,12 @@
 name: 공식 경기 결과 갱신
 
+# GitHub 예약 실행은 크게 늦거나 빠지는 일이 잦아서(11/5에는 10분 간격 예약 중 두 번만 돌았음),
+# 한 번 시작된 실행이 대회 기간 내내 5분마다 공식 기록을 확인하고, 작업 시간 한도(6시간) 전에
+# 다음 실행을 스스로 띄워 이어 갑니다. 예약 실행은 그 사슬이 끊겼을 때 다시 잇는 예비용입니다.
 on:
   schedule:
-    # 대회 기간(11/4~11/7) 한국 시간 08~19시에 10분마다. cron은 UTC 기준이고, GitHub 사정에 따라 늦어질 수 있음
-    - cron: "*/10 23,0-10 3-7 11 *"
-  workflow_dispatch:       # Actions 탭에서 수동 실행
+    - cron: "17 * 4-7 11 *"   # 매시 17분(UTC 11/4~11/7). 돌고 있는 실행이 있으면 기다리다 취소됩니다.
+  workflow_dispatch:          # Actions 탭에서 수동 실행 = 돌고 있는 실행을 끝내고 새로 시작
     inputs:
       all:
         description: "이미 받은 결과까지 전부 다시 읽기"
@@ -13,14 +15,17 @@ on:
 
 permissions:
   contents: write
+  actions: write   # 다음 실행 띄우기
 
 concurrency:
   group: results
-  cancel-in-progress: false
+  # 수동·이어 붙인 실행은 앞 실행을 끝내고 바로 시작, 예약 실행은 돌고 있는 실행이 있으면 기다립니다.
+  cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' }}
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
@@ -28,16 +33,33 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 공식 기록 가져오기
-        run: python update_results.py ${{ inputs.all && '--all' || '' }}
-
-      - name: 바뀌었으면 커밋 (GitHub Pages가 자동으로 다시 배포)
+      - name: 5분마다 공식 기록 확인 → 바뀌면 커밋 (GitHub Pages가 자동으로 다시 배포)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARGS: ${{ inputs.all && '--all' || '' }}
+        shell: bash
         run: |
+          set +e   # 한 번 실패(포털·네트워크 오류)해도 멈추지 않고 다음 확인 때 다시
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add official.json
-          if ! git diff --cached --quiet; then
-            git commit -m "공식 결과 갱신 $(TZ=Asia/Seoul date '+%m-%d %H:%M')"
-            git pull --rebase -q
-            git push
-          fi
+          sync() { git pull -q --rebase || { git rebase --abort 2>/dev/null; git reset -q --hard origin/main; }; }
+          handoff=$((SECONDS + 330 * 60))   # 5시간 30분 뒤 다음 실행으로 넘김
+          while :; do
+            now=$(TZ=Asia/Seoul date +%Y%m%d%H%M)
+            if [ "$now" -ge 202611072200 ]; then echo "대회 끝 — 멈춤"; exit 0; fi
+            hour=$((10#${now:8:2}))
+            if [ "$hour" -ge 7 ] && [ "$hour" -lt 22 ]; then   # 한국 시간 07~21시에만 확인
+              sync
+              if python update_results.py $ARGS; then ARGS=""; fi
+              git add official.json
+              git diff --cached --quiet || git commit -q -m "공식 결과 갱신 $(TZ=Asia/Seoul date '+%m-%d %H:%M')"
+              if [ "$(git rev-list --count origin/main..HEAD)" != 0 ]; then
+                sync; git push -q || echo "푸시 실패 — 다음 확인 때 다시"
+              fi
+            fi
+            if [ "$SECONDS" -ge "$handoff" ]; then
+              gh workflow run results.yml && echo "다음 실행으로 넘김" && exit 0
+              echo "다음 실행 띄우기 실패 — 예약 실행이 다시 이어 줌"; exit 1
+            fi
+            sleep 300
+          done

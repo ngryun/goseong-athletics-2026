@@ -25,6 +25,7 @@ HTML = HERE / "index.html"
 OUT = HERE / "official.json"
 UA = {"User-Agent": "Mozilla/5.0 (goseong-athletics-2026 results)"}
 KST = dt.timezone(dt.timedelta(hours=9))
+REGION = "고성"  # 계주는 지역 선발팀(예: '고성선발', 참가 지역 '고성')으로 나옵니다.
 STATUS = {"DNS": "불참", "DNF": "기권", "DQ": "실격", "DSQ": "실격", "NM": "기록 없음"}
 
 ROW = re.compile(
@@ -112,6 +113,7 @@ def entries(sn):
     for x in item.get("iemList") or []:
         out.append({
             "school": norm_school(x.get("schlNm") or ""), "name": (x.get("plyrNm") or "").replace(" ", ""),
+            "region": (x.get("ptcpRgnNm") or "").strip(),
             "rnk": str(x.get("rnk") or "").strip(), "rcd": str(x.get("rcd") or "").strip(),
         })
     return out
@@ -131,13 +133,17 @@ def value(e):
 def fits(race, r):
     if race["gender"] != r["gender"] or race["level"] != r["level"] or race["event"] != r["event"]:
         return False
-    # 계주는 학년이 섞일 수 있어 학년이 적혀 있어도 엄격히 따지지 않습니다.
-    return race["grade"] is None or race["grade"] == r["grade"] or is_relay(r["event"])
+    # 초등부 계주도 학년별로 따로 뛰므로 학년까지 맞춥니다. 학년이 섞인 팀은 팀원 중 한 명만 맞으면 됩니다.
+    return race["grade"] is None or race["grade"] == r["grade"]
 
 
 def find(es, r):
     for e in es:
-        if e["school"] == r["school"] and (is_relay(r["event"]) or e["name"] == r["name"]):
+        if is_relay(r["event"]):
+            # 학교 팀이거나 고성 선발팀(여러 학교 학생이 한 팀). 선발팀이면 팀원 학교마다 같은 결과가 들어갑니다.
+            if e["school"] == r["school"] or e["region"] == REGION or e["school"].startswith(REGION + "선발"):
+                return e
+        elif e["school"] == r["school"] and e["name"] == r["name"]:
             return e
     return None
 

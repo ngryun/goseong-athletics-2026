@@ -869,7 +869,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
     $('#statStudents').innerHTML = `${uniq(rows.map((r) => r.sid)).length}<small>명</small>`;
     $('#statRows').innerHTML = `${rows.length}<small>건</small>`;
     $('#foot').innerHTML = (DATA.note ? DATA.note.split('/').map((s) => `<p>※ ${esc(s.trim())}</p>`).join('') : '') +
-      '<p>※ 경기 결과는 강원체육대회 운영지원포털 공식 기록을 10분마다 자동으로 가져오고, 현장에서 먼저 입력한 결과도 함께 보여 줍니다.</p>';
+      '<p>※ 경기 결과는 강원체육대회 운영지원포털 공식 기록을 5분마다 자동으로 가져오고, 현장에서 먼저 입력한 결과도 함께 보여 줍니다.</p>';
   }
 
   /* ---------- 이미지 내보내기 ---------- */
@@ -1212,7 +1212,7 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
   }
 
   /* ---------- 경기 결과: 공식 기록 ---------- */
-  // GitHub Actions가 대회 중 10분마다 포털 공식 기록을 official.json으로 올리고, 화면은 1분마다 확인합니다.
+  // GitHub Actions가 대회 중 5분마다 포털 공식 기록을 official.json으로 올리고, 화면은 1분마다 확인합니다.
   let officialText = '';
   let officialAt = null;
   async function loadOfficial() {
