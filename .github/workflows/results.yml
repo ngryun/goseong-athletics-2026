@@ -58,7 +58,7 @@ jobs:
               fi
             fi
             if [ "$SECONDS" -ge "$handoff" ]; then
-              gh workflow run results.yml && echo "다음 실행으로 넘김" && exit 0
+              gh workflow run results.yml --ref "$GITHUB_REF_NAME" && echo "다음 실행으로 넘김" && exit 0
               echo "다음 실행 띄우기 실패 — 예약 실행이 다시 이어 줌"; exit 1
             fi
             sleep 300
