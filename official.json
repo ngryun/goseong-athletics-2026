@@ -100,6 +100,10 @@
    "rank": 1,
    "record": "56.98"
   },
+  "고성중|1|강선영|1500m|결승": {
+   "rank": 1,
+   "record": "5:31.70"
+  },
   "고성중|1|김시준|1500m|결승": {
    "rank": 1,
    "record": "4:37.94"
@@ -228,5 +232,5 @@
   }
  },
  "source": "https://gwe.go.kr/sports/race/view.do?key=2501060067&spcpSeCd=004&raceClsCd=001",
- "updatedAt": "2026-11-06T11:21:53+09:00"
+ "updatedAt": "2026-11-06T11:50:40+09:00"
 }
