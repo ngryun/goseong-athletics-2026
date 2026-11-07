@@ -108,6 +108,10 @@
    "rank": 1,
    "record": "4:37.94"
   },
+  "고성중|1|김시준|800m|결승": {
+   "rank": 2,
+   "record": "2:13.66"
+  },
   "고성중|1|최리원|400m|결승": {
    "status": "불참"
   },
@@ -239,5 +243,5 @@
   }
  },
  "source": "https://gwe.go.kr/sports/race/view.do?key=2501060067&spcpSeCd=004&raceClsCd=001",
- "updatedAt": "2026-11-07T09:39:24+09:00"
+ "updatedAt": "2026-11-07T11:02:16+09:00"
 }
